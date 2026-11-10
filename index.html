@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Copa dos Deuses</title>
+<title>12ª Copa dos Deuses</title>
 <meta name="description" content="Copa dos Deuses da PDD: tabela, jogos, notas e craque da copa.">
 <meta property="og:title" content="Copa dos Deuses">
 <meta property="og:description" content="Tabela, jogos e notas da Copa dos Deuses da PDD. 02/12, 21h às 00h.">
@@ -198,7 +198,7 @@ textarea{font:500 15px var(--body);color:var(--fg);background:var(--surface);bor
 <div class="wrap">
   <header>
     <div class="brand"><img class="logo" alt="Escudo da PDD" src="logo.png">
-      <div><div class="kicker">PDD apresenta</div><h1>Copa dos Deuses</h1>
+      <div><div class="kicker">PDD apresenta · 12ª edição</div><h1>Copa dos Deuses</h1>
       <div class="when"><span>Qua, 02/12</span><span>21h às 00h</span><span id="countdown"></span></div></div></div>
     <p id="sub">Carregando…</p>
     <div id="champ"></div>
@@ -456,17 +456,17 @@ function viewRegras(){
 /* ===== galeria dos campeões ===== */
 // edições antigas fixas no site (não editáveis pela página)
 const HISTORICO=[
-  {nome:"Copa anterior da PDD",data:"",campeao:"Brasil",jogadores:"Paulista, Álvaro, Serginho, Papito, Freire, Bruno Mesquita",foto:"fotos/campeoes-anterior.jpg",ordem:1,fixo:true}
+  {nome:"11ª Copa dos Deuses",data:"",campeao:"Brasil",jogadores:"Paulista, Álvaro, Serginho, Papito, Freire, Bruno Mesquita",foto:"fotos/campeoes-anterior.jpg",ordem:1,fixo:true}
 ];
 function copaResumo(){
   const f=jogos["final"];if(!f||!played(f))return null;
   const w=winner(f),v=w===f.casa?f.fora:f.casa,t=team(w),{ok}=standingsPlayers();
   const art=Object.values(standingsPlayers()).flat().filter(s=>s.g>0).sort((a,b)=>b.g-a.g)[0];
-  return {nome:"Copa dos Deuses",data:"02/12/2026",campeao:t?.nome||"",jogadores:[...(t?.goleiro?[t.goleiro]:[]),...(t?.jogadores||[])].join(", "),
+  return {nome:"12ª Copa dos Deuses",data:"02/12/2026",campeao:t?.nome||"",jogadores:[...(t?.goleiro?[t.goleiro]:[]),...(t?.jogadores||[])].join(", "),
     vice:team(v)?.nome||"",placar:`${f.gc} × ${f.gf}${f.gc===f.gf?" (pênaltis)":""}`,craque:ok[0]?`${ok[0].p} (${dec(ok[0].med,2)})`:"",artilheiro:art?`${art.p} (${art.g} gols)`:"",obs:""};
 }
 function viewCampeoes(){
-  const res=copaResumo(),jaTem=galeria.some(e=>e.nome==="Copa dos Deuses"&&e.data==="02/12/2026");
+  const res=copaResumo(),jaTem=galeria.some(e=>e.nome==="12ª Copa dos Deuses");
   let h=`<div class="section"><div class="sec-h"><h2>Galeria dos campeões</h2>${canWrite?'<button class="btn sm" data-act="galnew">+ Adicionar edição</button>':""}</div>`;
   if(canWrite&&res&&!jaTem)h+=`<div class="warn" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><span>🏆 A final acabou: <b>${esc(res.campeao)}</b> campeão.</span><button class="btn sm primary" data-act="galauto">Registrar na galeria</button></div>`;
   const eds=[...galeria.map((e,i)=>({...e,i})),...HISTORICO].sort((a,b)=>(b.ordem??0)-(a.ordem??0)||String(b.data).localeCompare(String(a.data)));
