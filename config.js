@@ -11,5 +11,5 @@ export const FIREBASE_CONFIG = {
 // E-mails (Google) de quem é da ditadura e pode lançar resultados e notas.
 // Lembre de colocar os mesmos e-mails em firestore.rules.
 export const DITADURA = [
-  // "fulano@gmail.com",
+  "davialcoforado@gmail.com",
 ];
