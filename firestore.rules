@@ -1,0 +1,21 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Todo mundo lê. Só a ditadura (e-mails abaixo, logados com Google) escreve.
+    function ditadura() {
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.token.email.lower() in [
+          // "fulano@gmail.com",
+        ];
+    }
+    match /copa/{doc} {
+      allow read: if true;
+      allow write: if ditadura();
+    }
+    match /jogos/{doc} {
+      allow read: if true;
+      allow write: if ditadura();
+    }
+  }
+}
