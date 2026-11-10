@@ -187,6 +187,14 @@ input,select{font:500 15px var(--body);color:var(--fg);background:var(--surface)
 .ed-roster{display:flex;flex-wrap:wrap;gap:6px}
 .ed-roster span{background:var(--surface-2);border-radius:999px;padding:3px 10px;font-size:13px}
 .ed-foto{display:block;width:100%;max-height:520px;object-fit:cover;object-position:center 30%;border-bottom:1px solid var(--line)}
+.lords-h{display:flex;justify-content:space-between;align-items:baseline;padding:12px 14px;border-bottom:1px solid var(--line)}
+.lord{display:grid;grid-template-columns:40px minmax(0,1fr);gap:10px;align-items:center;padding:9px 14px;border-top:1px solid var(--line)}
+.lord:nth-child(2){border-top:0}
+.lord-n{font:800 26px var(--display);color:var(--gold);text-align:center;font-variant-numeric:tabular-nums}
+.tit{display:inline-block;font:700 10px var(--body);text-transform:uppercase;letter-spacing:.6px;padding:2px 6px;border-radius:999px;vertical-align:middle;background:var(--surface-2);color:var(--muted)}
+.tit.t3{background:var(--gold-soft);color:var(--gold)}
+.tit.t4,.tit.t5{background:var(--gold);color:var(--bg)}
+.ed-roster b.tit{margin-left:2px}
 .ed-note{padding:0 16px 14px;color:var(--muted);font-size:14px}
 textarea{font:500 15px var(--body);color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px;width:100%;min-height:80px;resize:vertical}
 .authbar{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);flex-wrap:wrap}
@@ -465,8 +473,19 @@ const HISTORICO=[
   {nome:"5ª Copa dos Deuses",data:"",campeao:"Laranja",jogadores:"Murilo (goleiro), Belo, Pajé, Maradona, Igor, Acerola, Vale",foto:"fotos/campeoes-05.jpg",ordem:5,fixo:true},
   {nome:"4ª Copa dos Deuses",data:"",campeao:"Azul",jogadores:"Igor (goleiro), Papito, Helder, Felipe, Vini Rios, Spinelli",foto:"fotos/campeoes-04.jpg",ordem:4,fixo:true},
   {nome:"3ª Copa dos Deuses",data:"",campeao:"Campeões da 3ª",jogadores:"Lucas Melo, Caribe, Léo Braga, Pi, Solado",foto:"fotos/campeoes-03.jpg",ordem:3,fixo:true},
-  {nome:"2ª Copa dos Deuses",data:"",campeao:"Preto",jogadores:"Papito, George, Léo Braga, Solado",obs:"Elenco com mais dois nomes a confirmar.",foto:"fotos/campeoes-02.jpg",ordem:2,fixo:true}
+  {nome:"2ª Copa dos Deuses",data:"",campeao:"Preto",jogadores:"Papito, George, Léo Braga, Solado",obs:"Elenco com mais dois nomes a confirmar.",foto:"fotos/campeoes-02.jpg",ordem:2,fixo:true},
+  {nome:"1ª Copa dos Deuses",data:"",campeao:"Vermelho",jogadores:"Nogueira, Solado, Freire, VH, Papito",foto:"fotos/campeoes-01.jpg",ordem:1,fixo:true}
 ];
+const normName=x=>x.replace(/\s*\(.*?\)\s*/g,"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
+const edNum=e=>{const m=/(\d+)\s*ª/.exec(e.nome||"");return m?+m[1]:null};
+const TITULO={2:"Bi",3:"Tri",4:"Tetra",5:"Penta",6:"Hexa",7:"Hepta"};
+function titulos(){
+  const m={};
+  for(const e of [...HISTORICO,...galeria])for(const raw of (e.jogadores||"").split(",")){
+    const nm=raw.replace(/\s*\(.*?\)\s*/g,"").trim();if(!nm)continue;const k=normName(nm);
+    (m[k]??={nome:nm,eds:[]}).eds.push(edNum(e)??e.nome)}
+  return m;
+}
 function copaResumo(){
   const f=jogos["final"];if(!f||!played(f))return null;
   const w=winner(f),v=w===f.casa?f.fora:f.casa,t=team(w),{ok}=standingsPlayers();
@@ -478,6 +497,8 @@ function viewCampeoes(){
   const res=copaResumo(),jaTem=galeria.some(e=>e.nome==="12ª Copa dos Deuses");
   let h=`<div class="section"><div class="sec-h"><h2>Galeria dos campeões</h2>${canWrite?'<button class="btn sm" data-act="galnew">+ Adicionar edição</button>':""}</div>`;
   if(canWrite&&res&&!jaTem)h+=`<div class="warn" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><span>🏆 A final acabou: <b>${esc(res.campeao)}</b> campeão.</span><button class="btn sm primary" data-act="galauto">Registrar na galeria</button></div>`;
+  const tt=titulos(),top=Object.values(tt).filter(x=>x.eds.length>=2).sort((a,b)=>b.eds.length-a.eds.length||a.nome.localeCompare(b.nome));
+  if(top.length)h+=`<div class="box"><div class="lords-h"><h3>Maiores campeões</h3><span class="note">${[...HISTORICO,...galeria].length} copas</span></div>${top.map((x,i)=>`<div class="lord"><span class="lord-n">${x.eds.length}</span><div style="min-width:0"><div class="name">${esc(x.nome)} <span class="tit t${Math.min(x.eds.length,5)}">${TITULO[x.eds.length]||x.eds.length+"×"}</span></div><div class="sub">${x.eds.slice().sort((a,b)=>a-b).map(n=>typeof n==="number"?n+"ª":esc(n)).join(" · ")}</div></div></div>`).join("")}</div>`;
   const eds=[...galeria.map((e,i)=>({...e,i})),...HISTORICO].sort((a,b)=>(b.ordem??0)-(a.ordem??0)||String(b.data).localeCompare(String(a.data)));
   if(!eds.length)h+=`<div class="empty"><b>Nenhum campeão ainda</b><span>${canWrite?"Cadastre as copas antigas da PDD em + Adicionar edição. A Copa dos Deuses entra aqui depois da final.":"O primeiro campeão aparece aqui depois da final da Copa dos Deuses."}</span></div>`;
   h+='<div class="hall">'+eds.map(e=>{
@@ -486,7 +507,7 @@ function viewCampeoes(){
     const kv=(k,v)=>v?`<div><div class="ed-k">${k}</div><div class="ed-v">${esc(v)}</div></div>`:"";
     return `<article class="ed"><div class="ed-h"><div class="cup" aria-hidden="true">🏆</div><div style="min-width:0">
       <div class="ed-year">${esc(e.nome)}${e.data?" · "+esc(e.data):""}</div><div class="ed-name">${esc(e.campeao)}</div>${e.vice?`<div class="ed-sub">Vice: ${esc(e.vice)}${e.placar?" · final "+esc(e.placar):""}</div>`:""}</div></div>${foto}
-      <div class="ed-body">${kv("Craque",e.craque)}${kv("Artilheiro",e.artilheiro)}${roster.length?`<div style="grid-column:1/-1"><div class="ed-k">Elenco campeão</div><div class="ed-roster">${roster.map(r=>`<span>${esc(r)}</span>`).join("")}</div></div>`:""}</div>
+      <div class="ed-body">${kv("Craque",e.craque)}${kv("Artilheiro",e.artilheiro)}${roster.length?`<div style="grid-column:1/-1"><div class="ed-k">Elenco campeão</div><div class="ed-roster">${roster.map(r=>{const n=tt[normName(r)]?.eds.length||1;return `<span>${esc(r)}${n>=2?` <b class="tit t${Math.min(n,5)}">${n}×</b>`:""}</span>`}).join("")}</div></div>`:""}</div>
       ${e.obs?`<div class="ed-note">${esc(e.obs)}</div>`:""}
       ${canWrite&&!e.fixo?`<div class="gactions"><button class="btn sm danger" data-act="galdel" data-i="${e.i}">${arm==="galdel:"+e.i?"Toque de novo pra excluir":"Excluir"}</button><button class="btn sm" data-act="galedit" data-i="${e.i}">Editar</button></div>`:""}</article>`}).join("")+'</div>';
   return h+"</div>";
