@@ -186,6 +186,7 @@ input,select{font:500 15px var(--body);color:var(--fg);background:var(--surface)
 .ed-v{font-weight:600}
 .ed-roster{display:flex;flex-wrap:wrap;gap:6px}
 .ed-roster span{background:var(--surface-2);border-radius:999px;padding:3px 10px;font-size:13px}
+.ed-foto{display:block;width:100%;max-height:520px;object-fit:cover;object-position:center 30%;border-bottom:1px solid var(--line)}
 .ed-note{padding:0 16px 14px;color:var(--muted);font-size:14px}
 textarea{font:500 15px var(--body);color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px;width:100%;min-height:80px;resize:vertical}
 .authbar{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);flex-wrap:wrap}
@@ -453,6 +454,10 @@ function viewRegras(){
 }
 
 /* ===== galeria dos campeões ===== */
+// edições antigas fixas no site (não editáveis pela página)
+const HISTORICO=[
+  {nome:"Copa anterior da PDD",data:"",campeao:"Brasil",jogadores:"Paulista, Álvaro, Serginho, Papito, Freire, Bruno Mesquita",foto:"fotos/campeoes-anterior.jpg",ordem:1,fixo:true}
+];
 function copaResumo(){
   const f=jogos["final"];if(!f||!played(f))return null;
   const w=winner(f),v=w===f.casa?f.fora:f.casa,t=team(w),{ok}=standingsPlayers();
@@ -464,16 +469,17 @@ function viewCampeoes(){
   const res=copaResumo(),jaTem=galeria.some(e=>e.nome==="Copa dos Deuses"&&e.data==="02/12/2026");
   let h=`<div class="section"><div class="sec-h"><h2>Galeria dos campeões</h2>${canWrite?'<button class="btn sm" data-act="galnew">+ Adicionar edição</button>':""}</div>`;
   if(canWrite&&res&&!jaTem)h+=`<div class="warn" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><span>🏆 A final acabou: <b>${esc(res.campeao)}</b> campeão.</span><button class="btn sm primary" data-act="galauto">Registrar na galeria</button></div>`;
-  const eds=galeria.map((e,i)=>({...e,i})).sort((a,b)=>(b.ordem??0)-(a.ordem??0)||String(b.data).localeCompare(String(a.data)));
+  const eds=[...galeria.map((e,i)=>({...e,i})),...HISTORICO].sort((a,b)=>(b.ordem??0)-(a.ordem??0)||String(b.data).localeCompare(String(a.data)));
   if(!eds.length)h+=`<div class="empty"><b>Nenhum campeão ainda</b><span>${canWrite?"Cadastre as copas antigas da PDD em + Adicionar edição. A Copa dos Deuses entra aqui depois da final.":"O primeiro campeão aparece aqui depois da final da Copa dos Deuses."}</span></div>`;
   h+='<div class="hall">'+eds.map(e=>{
+    const foto=e.foto?`<img class="ed-foto" src="${esc(e.foto)}" alt="Time campeão: ${esc(e.campeao)}" loading="lazy">`:"";
     const roster=(e.jogadores||"").split(",").map(x=>x.trim()).filter(Boolean);
     const kv=(k,v)=>v?`<div><div class="ed-k">${k}</div><div class="ed-v">${esc(v)}</div></div>`:"";
     return `<article class="ed"><div class="ed-h"><div class="cup" aria-hidden="true">🏆</div><div style="min-width:0">
-      <div class="ed-year">${esc(e.nome)}${e.data?" · "+esc(e.data):""}</div><div class="ed-name">${esc(e.campeao)}</div>${e.vice?`<div class="ed-sub">Vice: ${esc(e.vice)}${e.placar?" · final "+esc(e.placar):""}</div>`:""}</div></div>
+      <div class="ed-year">${esc(e.nome)}${e.data?" · "+esc(e.data):""}</div><div class="ed-name">${esc(e.campeao)}</div>${e.vice?`<div class="ed-sub">Vice: ${esc(e.vice)}${e.placar?" · final "+esc(e.placar):""}</div>`:""}</div></div>${foto}
       <div class="ed-body">${kv("Craque",e.craque)}${kv("Artilheiro",e.artilheiro)}${roster.length?`<div style="grid-column:1/-1"><div class="ed-k">Elenco campeão</div><div class="ed-roster">${roster.map(r=>`<span>${esc(r)}</span>`).join("")}</div></div>`:""}</div>
       ${e.obs?`<div class="ed-note">${esc(e.obs)}</div>`:""}
-      ${canWrite?`<div class="gactions"><button class="btn sm danger" data-act="galdel" data-i="${e.i}">${arm==="galdel:"+e.i?"Toque de novo pra excluir":"Excluir"}</button><button class="btn sm" data-act="galedit" data-i="${e.i}">Editar</button></div>`:""}</article>`}).join("")+'</div>';
+      ${canWrite&&!e.fixo?`<div class="gactions"><button class="btn sm danger" data-act="galdel" data-i="${e.i}">${arm==="galdel:"+e.i?"Toque de novo pra excluir":"Excluir"}</button><button class="btn sm" data-act="galedit" data-i="${e.i}">Editar</button></div>`:""}</article>`}).join("")+'</div>';
   return h+"</div>";
 }
 function viewGalForm(){
@@ -481,7 +487,7 @@ function viewGalForm(){
   return `<form class="form" id="galform" novalidate><h2>${galEdit.i==null?"Nova edição":"Editar edição"}</h2>
     <div class="fgrid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">${f("nome","Nome da copa","Ex.: Copa dos Deuses",e.nome)}${f("data","Data ou ano","Ex.: 12/2025",e.data)}
     ${f("campeao","Time campeão","Ex.: Zeus",e.campeao)}${f("vice","Vice (opcional)","",e.vice)}${f("placar","Placar da final (opcional)","Ex.: 2 × 1",e.placar)}
-    ${f("craque","Craque (opcional)","",e.craque)}${f("artilheiro","Artilheiro (opcional)","",e.artilheiro)}</div>
+    ${f("craque","Craque (opcional)","",e.craque)}${f("artilheiro","Artilheiro (opcional)","",e.artilheiro)}${f("foto","Link da foto (opcional)","https://…",e.foto)}</div>
     <label class="f">Elenco campeão (separe por vírgula)<textarea id="g-jogadores">${esc(e.jogadores||"")}</textarea></label>
     <label class="f">História da copa (opcional)<textarea id="g-obs" placeholder="Um lance, uma zoeira, como foi a final…">${esc(e.obs||"")}</textarea></label>
     <p class="err" id="gerr" hidden></p>
@@ -631,7 +637,7 @@ view.addEventListener("submit",async ev=>{
   ev.preventDefault();
   if(ev.target.id==="galform"){
     const g=k=>(document.getElementById("g-"+k)?.value||"").trim(),err=document.getElementById("gerr");
-    const data={nome:g("nome"),data:g("data"),campeao:g("campeao"),vice:g("vice"),placar:g("placar"),craque:g("craque"),artilheiro:g("artilheiro"),jogadores:g("jogadores"),obs:g("obs")};
+    const data={nome:g("nome"),data:g("data"),campeao:g("campeao"),vice:g("vice"),placar:g("placar"),craque:g("craque"),artilheiro:g("artilheiro"),jogadores:g("jogadores"),obs:g("obs"),foto:/^https:\/\//.test(g("foto"))?g("foto"):""};
     if(!data.nome||!data.campeao){err.textContent="Coloque pelo menos o nome da copa e o time campeão.";err.hidden=false;return}
     data.ordem=galEdit.i==null?Date.now():(galeria[galEdit.i].ordem??0);
     const list=galeria.slice();if(galEdit.i==null)list.push(data);else list[galEdit.i]=data;
