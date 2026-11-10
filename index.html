@@ -482,6 +482,7 @@ const TITULO={2:"Bi",3:"Tri",4:"Tetra",5:"Penta",6:"Hexa",7:"Hepta"};
 function titulos(){
   const m={};
   for(const e of [...HISTORICO,...galeria])for(const raw of (e.jogadores||"").split(",")){
+    if(/\(goleiro\)/i.test(raw))continue; // goleiro avulso não conta título
     const nm=raw.replace(/\s*\(.*?\)\s*/g,"").trim();if(!nm)continue;const k=normName(nm);
     (m[k]??={nome:nm,eds:[]}).eds.push(edNum(e)??e.nome)}
   return m;
@@ -507,7 +508,7 @@ function viewCampeoes(){
     const kv=(k,v)=>v?`<div><div class="ed-k">${k}</div><div class="ed-v">${esc(v)}</div></div>`:"";
     return `<article class="ed"><div class="ed-h"><div class="cup" aria-hidden="true">🏆</div><div style="min-width:0">
       <div class="ed-year">${esc(e.nome)}${e.data?" · "+esc(e.data):""}</div><div class="ed-name">${esc(e.campeao)}</div>${e.vice?`<div class="ed-sub">Vice: ${esc(e.vice)}${e.placar?" · final "+esc(e.placar):""}</div>`:""}</div></div>${foto}
-      <div class="ed-body">${kv("Craque",e.craque)}${kv("Artilheiro",e.artilheiro)}${roster.length?`<div style="grid-column:1/-1"><div class="ed-k">Elenco campeão</div><div class="ed-roster">${roster.map(r=>{const n=tt[normName(r)]?.eds.length||1;return `<span>${esc(r)}${n>=2?` <b class="tit t${Math.min(n,5)}">${n}×</b>`:""}</span>`}).join("")}</div></div>`:""}</div>
+      <div class="ed-body">${kv("Craque",e.craque)}${kv("Artilheiro",e.artilheiro)}${roster.length?`<div style="grid-column:1/-1"><div class="ed-k">Elenco campeão</div><div class="ed-roster">${roster.map(r=>{const n=/\(goleiro\)/i.test(r)?1:(tt[normName(r)]?.eds.length||1);return `<span>${esc(r)}${n>=2?` <b class="tit t${Math.min(n,5)}">${n}×</b>`:""}</span>`}).join("")}</div></div>`:""}</div>
       ${e.obs?`<div class="ed-note">${esc(e.obs)}</div>`:""}
       ${canWrite&&!e.fixo?`<div class="gactions"><button class="btn sm danger" data-act="galdel" data-i="${e.i}">${arm==="galdel:"+e.i?"Toque de novo pra excluir":"Excluir"}</button><button class="btn sm" data-act="galedit" data-i="${e.i}">Editar</button></div>`:""}</article>`}).join("")+'</div>';
   return h+"</div>";
