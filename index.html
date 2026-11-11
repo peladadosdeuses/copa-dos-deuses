@@ -196,6 +196,30 @@ input,select{font:500 15px var(--body);color:var(--fg);background:var(--surface)
 .tit.t4,.tit.t5{background:var(--gold);color:var(--bg)}
 .ed-roster b.tit{margin-left:2px}
 .ed-note{padding:0 16px 14px;color:var(--muted);font-size:14px}
+.ed-more{border-top:1px solid var(--line)}
+.ed-more>summary{cursor:pointer;list-style:none;padding:12px 16px;font:700 13px var(--body);text-transform:uppercase;letter-spacing:.8px;color:var(--gold);display:flex;justify-content:space-between;align-items:center}
+.ed-more>summary::-webkit-details-marker{display:none}
+.ed-more>summary::after{content:"+";font-size:18px}
+.ed-more[open]>summary::after{content:"–"}
+.dt{padding:0 16px 16px;display:flex;flex-direction:column;gap:16px}
+.dt h4{margin:0 0 6px;font:700 11px var(--body);text-transform:uppercase;letter-spacing:.8px;color:var(--muted)}
+.dt-scroll{overflow-x:auto}
+.dt table{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+.dt th{font:600 11px var(--body);color:var(--muted);text-align:center;padding:6px 4px;border-bottom:1px solid var(--line)}
+.dt td{text-align:center;padding:6px 4px;border-bottom:1px solid var(--line)}
+.dt th:first-child,.dt td:first-child{text-align:left;white-space:nowrap}
+.dt tr.win td{font-weight:700}
+.dt-rod{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.dt-rod>div{background:var(--surface-2);border-radius:10px;padding:8px 10px;font-size:14px}
+.dt-rod b{display:block;font:600 11px var(--body);text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:4px}
+.dt-jogo{display:flex;align-items:center;gap:6px;padding:2px 0;flex-wrap:wrap}
+.dt-jogo .dt-pl{font-weight:700;font-variant-numeric:tabular-nums}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;border:1px solid var(--line);vertical-align:middle;margin-right:4px;flex:none}
+.dt-times{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+.dt-time{background:var(--surface-2);border-radius:10px;padding:8px 10px;min-width:0}
+.dt-time h5{margin:0 0 4px;font:700 15px var(--body)}
+.dt-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.dt-x{font-size:13px;color:var(--muted)}
 textarea{font:500 15px var(--body);color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px;width:100%;min-height:80px;resize:vertical}
 .authbar{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);flex-wrap:wrap}
 .authbar b{color:var(--accent)}
@@ -470,9 +494,38 @@ const HISTORICO=[
   {nome:"8ª Copa dos Deuses",data:"",campeao:"Holanda",jogadores:"Freire, Tufão, Gustavo Markus, Acerola, Juninho, Sales",foto:"fotos/campeoes-08.jpg",ordem:8,fixo:true},
   {nome:"7ª Copa dos Deuses",data:"",campeao:"Argentina",jogadores:"Léo Nogueira, Raoni, Brennand, Rodrigo Paiva, Sales, Igor, Pi",foto:"fotos/campeoes-07.jpg",ordem:7,fixo:true},
   {nome:"6ª Copa dos Deuses",data:"",campeao:"Preto",jogadores:"Rafael Melo, Daví Silva, Marcelo Lopes, VG, Pedro Sá, VH, Pi",foto:"fotos/campeoes-06.jpg",ordem:6,fixo:true},
-  {nome:"5ª Copa dos Deuses",data:"",campeao:"Laranja",jogadores:"Murilo (goleiro), Belo, Pajé, Maradona, Igor, Acerola, Vale",foto:"fotos/campeoes-05.jpg",ordem:5,fixo:true},
-  {nome:"4ª Copa dos Deuses",data:"",campeao:"Azul",jogadores:"Igor (goleiro), Papito, Helder, Felipe, Vini Rios, Spinelli",foto:"fotos/campeoes-04.jpg",ordem:4,fixo:true},
-  {nome:"3ª Copa dos Deuses",data:"",campeao:"Campeões da 3ª",jogadores:"Lucas Melo, Caribe, Léo Braga, Pi, Solado",foto:"fotos/campeoes-03.jpg",ordem:3,fixo:true},
+  {nome:"5ª Copa dos Deuses",data:"10/07/2022",campeao:"Laranja",craque:"Maradona",artilheiro:"Paulista (4 gols)",jogadores:"Murilo (goleiro), Belo, Pajé, Maradona, Igor, Acerola, Vale",foto:"fotos/campeoes-05.jpg",ordem:5,fixo:true,
+   detalhe:{
+    artilheiros:[["Paulista","Branco",4],["Daví Silva","Azul",3],["Vinícius","Amarelo",3],["Magleibson","Preto",3],["Belo","Laranja",2],["Vale","Laranja",2],["Tufão","Azul",2]],
+    garcons:[["Pepa","Amarelo",3],["Daví Silva","Azul",2],["Acerola","Laranja",2],["Pajé","Laranja",1],["Marcelo Lopes","Branco",1],["Ermírio","Branco",1],["Freire","Azul",1],["Tufão","Azul",1],["Luís Felipe","Preto",1],["Magleibson","Preto",1]],
+    selecao:[["Goleiro","Murilo"],["Zaga","VG"],["Zaga","Heldinho"],["Meio","Acerola"],["Meio","Belo"],["Meio","Pepa"],["Ataque","Paulista"]]}},
+  {nome:"4ª Copa dos Deuses",data:"",campeao:"Verde",vice:"Vermelho",placar:"1 × 0",artilheiro:"KDU e Daví Silva (3 gols)",jogadores:"Igor (goleiro), Papito, Hélder, Luis Felipe, Vini Rios, Spinelli",foto:"fotos/campeoes-04.jpg",ordem:4,fixo:true,
+   detalhe:{
+    tabela:[["Vermelho",10,3,1,2,8,4,4],["Verde",8,2,2,2,4,4,0],["Azul",8,2,2,2,5,7,-2],["Preto",7,2,1,3,5,7,-2]],
+    rodadas:[[["Preto",2,1,"Vermelho"],["Verde",1,1,"Azul"]],[["Preto",1,0,"Verde"],["Azul",0,2,"Vermelho"]],[["Verde",1,1,"Vermelho"],["Preto",0,0,"Azul"]],
+             [["Vermelho",2,0,"Preto"],["Azul",1,0,"Verde"]],[["Verde",1,0,"Preto"],["Vermelho",2,0,"Azul"]],[["Vermelho",0,1,"Verde"],["Azul",3,2,"Preto"]]],
+    semis:[["Preto","0 (2)","(3) 0","Vermelho"],["Verde",1,0,"Azul"]],
+    final:["Verde",1,0,"Vermelho"],
+    cols:["G","A","Def/Des","Nota"],
+    times:[
+     {nome:"Verde",jog:[["Igor (gol)",0,1,7,"10,00"],["Papito",0,0,2,"7,95"],["Vini Rios",2,1,2,"8,26"],["Luis Felipe",2,2,2,"8,50"],["Hélder",0,0,3,"7,24"],["Spinelli",2,1,1,"9,48"]]},
+     {nome:"Vermelho",jog:[["Igor (gol)",0,1,7,"10,00"],["KDU",3,0,1,"7,85"],["Coimbra",2,0,2,"7,33"],["Vale",1,1,1,"6,31"],["Ash",2,1,3,"7,23"],["Vitu",0,0,1,"6,19"]],obs:"O post repete a linha do Igor do time Verde; o goleiro do Vermelho pode ser outro."},
+     {nome:"Azul",jog:[["Pajé (gol)",0,0,5,"7,05"],["Lucas Melo",2,1,2,"7,63"],["Acerola",2,2,2,"7,67"],["Léo Braga",0,1,3,"6,26"],["VH",1,0,2,"5,61"],["Tufão",0,1,0,"4,24"]]},
+     {nome:"Preto",jog:[["Kiko (gol)",0,0,6,"8,00"],["Daví Silva",3,1,1,"8,25"],["Serginho",0,1,2,"6,29"],["Freire",2,2,1,"7,36"],["Luciano",0,0,0,"5,42"],["Pi",0,0,3,"6,21"]]}]}},
+  {nome:"3ª Copa dos Deuses",data:"",campeao:"Azul",vice:"Vermelho",placar:"3 × 0",artilheiro:"Solado (6 gols)",jogadores:"Lucas Melo, Solado, Léo Braga, Caribé, Pi",foto:"fotos/campeoes-03.jpg",ordem:3,fixo:true,
+   obs:"No Instagram esta edição saiu como “4º Campeonato dos Deuses”.",
+   detalhe:{
+    tabela:[["Azul",11,3,2,0,7,3,4],["Vermelho",9,2,3,1,7,3,4],["Verde",8,2,2,2,5,7,-2],["Preto",1,0,1,4,3,7,-4]],
+    rodadas:[[["Vermelho",1,1,"Preto"],["Verde",0,1,"Azul"]],[["Preto",0,1,"Verde"],["Azul",0,0,"Vermelho"]],[["Vermelho",3,0,"Verde"],["Azul",1,0,"Preto"]],
+             [["Preto",2,2,"Vermelho"],["Azul",1,2,"Verde"]],[["Verde",2,1,"Preto"],["Azul",3,1,"Vermelho"]],[["Verde",0,0,"Vermelho"],["Preto","anulado","","Azul"]]],
+    semis:[["Vermelho","1 (3)","(2) 1","Verde"],["Azul","","","Preto"]],
+    final:["Vermelho",0,3,"Azul"],
+    cols:["G","A"],
+    times:[
+     {nome:"Azul",jog:[["Lucas Melo",2,3],["Solado",6,1],["Léo Braga",3,4],["Caribé",1,2],["Pi",0,0]]},
+     {nome:"Vermelho",jog:[["Papito",2,1],["Vinícius",4,1],["Pedro Lago",1,1],["Heldinho",0,0],["Jay",2,1]]},
+     {nome:"Verde",jog:[["Pajé",1,2],["Luis Felipe",2,0],["Vitor Hugo",0,2],["Nogueira",2,0],["Ítalo",1,2]]},
+     {nome:"Preto",jog:[["KDU",1,0],["Vale",1,1],["Vitu",1,0],["Gui Sheik",0,0],["Murilo",1,1]]}]}},
   {nome:"2ª Copa dos Deuses",data:"",campeao:"Preto",jogadores:"Papito, George, Léo Braga, Solado",obs:"Elenco com mais dois nomes a confirmar.",foto:"fotos/campeoes-02.jpg",ordem:2,fixo:true},
   {nome:"1ª Copa dos Deuses",data:"",campeao:"Vermelho",jogadores:"Nogueira, Solado, Freire, VH, Papito",foto:"fotos/campeoes-01.jpg",ordem:1,fixo:true}
 ];
@@ -494,6 +547,20 @@ function copaResumo(){
   return {nome:"12ª Copa dos Deuses",data:"02/12/2026",campeao:t?.nome||"",jogadores:[...(t?.goleiro?[t.goleiro]:[]),...(t?.jogadores||[])].join(", "),
     vice:team(v)?.nome||"",placar:`${f.gc} × ${f.gf}${f.gc===f.gf?" (pênaltis)":""}`,craque:ok[0]?`${ok[0].p} (${dec(ok[0].med,2)})`:"",artilheiro:art?`${art.p} (${art.g} gols)`:"",obs:""};
 }
+const COR={verde:"#3fae49",vermelho:"#e0352b",azul:"#6bb6f0",preto:"#111",laranja:"#f28a1e",amarelo:"#f5d33a",branco:"#fff"};
+const dot=t=>`<span class="dot" style="background:${COR[normName(t)]||"var(--muted)"}"></span>`;
+function detalheHTML(d){
+  const jogo=([a,x,y,b])=>`<div class="dt-jogo">${dot(a)}${esc(a)} <span class="dt-pl">${x===""?"×":esc(String(x))+(x==="anulado"?"":" × "+esc(String(y)))}</span> ${esc(b)}${dot(b)}</div>`;
+  const lista=(t,l,u)=>`<div><h4>${t}</h4><div class="dt-scroll"><table>${l.map((r,i)=>`<tr><td>${i+1}. ${dot(r[1])}${esc(r[0])}</td><td>${r[2]} ${r[2]===1?u[0]:u[1]}</td></tr>`).join("")}</table></div></div>`;
+  let h='<div class="dt">';
+  if(d.tabela)h+=`<div><h4>Classificação</h4><div class="dt-scroll"><table><tr><th></th><th>P</th><th>V</th><th>E</th><th>D</th><th>GP</th><th>GC</th><th>SG</th></tr>${d.tabela.map((r,i)=>`<tr><td>${i+1}º ${dot(r[0])}${esc(r[0])}</td>${r.slice(1).map((v,k)=>`<td>${k===6&&v>0?"+"+v:v}</td>`).join("")}</tr>`).join("")}</table></div></div>`;
+  if(d.rodadas)h+=`<div><h4>Rodadas</h4><div class="dt-rod">${d.rodadas.map((r,i)=>`<div><b>${i+1}ª rodada</b>${r.map(jogo).join("")}</div>`).join("")}</div></div>`;
+  if(d.semis||d.final)h+=`<div><h4>Mata-mata</h4><div class="dt-rod">${d.semis?`<div><b>Semifinais</b>${d.semis.map(jogo).join("")}</div>`:""}${d.final?`<div><b>Final</b>${jogo(d.final)}</div>`:""}</div></div>`;
+  if(d.times)h+=`<div><h4>Números por time</h4><div class="dt-times">${d.times.map(t=>`<div class="dt-time"><h5>${dot(t.nome)}${esc(t.nome)}</h5><div class="dt-scroll"><table><tr><th></th>${d.cols.map(c=>`<th>${c}</th>`).join("")}</tr>${t.jog.map(j=>`<tr><td>${esc(j[0])}</td>${j.slice(1).map(v=>`<td>${esc(String(v))}</td>`).join("")}</tr>`).join("")}</table></div>${t.obs?`<div class="dt-x">${esc(t.obs)}</div>`:""}</div>`).join("")}</div></div>`;
+  if(d.artilheiros||d.garcons)h+=`<div class="dt-list">${d.artilheiros?lista("Artilheiros",d.artilheiros,["gol","gols"]):""}${d.garcons?lista("Garçons",d.garcons,["assist.","assist."]):""}</div>`;
+  if(d.selecao)h+=`<div><h4>Seleção dos Deuses</h4><div class="dt-scroll"><table>${d.selecao.map(([p,n])=>`<tr><td>${esc(p)}</td><td style="text-align:left;font-weight:600">${esc(n)}</td></tr>`).join("")}</table></div></div>`;
+  return h+"</div>";
+}
 function viewCampeoes(){
   const res=copaResumo(),jaTem=galeria.some(e=>e.nome==="12ª Copa dos Deuses");
   let h=`<div class="section"><div class="sec-h"><h2>Galeria dos campeões</h2>${canWrite?'<button class="btn sm" data-act="galnew">+ Adicionar edição</button>':""}</div>`;
@@ -510,6 +577,7 @@ function viewCampeoes(){
       <div class="ed-year">${esc(e.nome)}${e.data?" · "+esc(e.data):""}</div><div class="ed-name">${esc(e.campeao)}</div>${e.vice?`<div class="ed-sub">Vice: ${esc(e.vice)}${e.placar?" · final "+esc(e.placar):""}</div>`:""}</div></div>${foto}
       <div class="ed-body">${kv("Craque",e.craque)}${kv("Artilheiro",e.artilheiro)}${roster.length?`<div style="grid-column:1/-1"><div class="ed-k">Elenco campeão</div><div class="ed-roster">${roster.map(r=>{const n=/\(goleiro\)/i.test(r)?1:(tt[normName(r)]?.eds.length||1);return `<span>${esc(r)}${n>=2?` <b class="tit t${Math.min(n,5)}">${n}×</b>`:""}</span>`}).join("")}</div></div>`:""}</div>
       ${e.obs?`<div class="ed-note">${esc(e.obs)}</div>`:""}
+      ${e.detalhe?`<details class="ed-more"><summary>Ver a copa completa</summary>${detalheHTML(e.detalhe)}</details>`:""}
       ${canWrite&&!e.fixo?`<div class="gactions"><button class="btn sm danger" data-act="galdel" data-i="${e.i}">${arm==="galdel:"+e.i?"Toque de novo pra excluir":"Excluir"}</button><button class="btn sm" data-act="galedit" data-i="${e.i}">Editar</button></div>`:""}</article>`}).join("")+'</div>';
   return h+"</div>";
 }
