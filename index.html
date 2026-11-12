@@ -9,46 +9,44 @@
 <meta property="og:description" content="Tabela, jogos e notas da Copa dos Deuses da PDD. 02/12, 21h às 00h, no Clube Português do Recife.">
 <meta property="og:image" content="logo.png">
 <link rel="icon" type="image/svg+xml" href="logo.svg">
-<meta name="theme-color" content="#00788c">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap">
+<meta name="theme-color" content="#06141a">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,800;1,900&family=Inter:wght@400;500;600;700&display=swap">
 <style>
-/* Layout: cabeçalho em inscrição (Cinzel) sobre faixa de mármore, abas fixas, placares em fonte condensada de estádio, cor por time */
+/* Identidade "Raio": noite + petróleo + ouro, Céu do Olimpo no topo cortado em diagonal de 14° com filete dourado. Visual escuro de propósito (tema único). */
 :root{
-  --bg:#eef0ee; --surface:#ffffff; --surface-2:#e4e8e5; --fg:#151c18; --muted:#5a665e; --line:#d3d9d4;
-  --accent:#00788c; --accent-fg:#ffffff; --gold:#b8890c; --gold-soft:#f6ecc9; --danger:#bf3a2b;
-  --t0:#2f5fd0; --t1:#0f8a8a; --t2:#7a3fbf; --t3:#c2452d; --t4:#c98a0c;
+  --bg:#06141a; --surface:#0d2229; --surface-2:#12303a; --fg:#ffffff; --muted:#a9c3c9; --line:#1f3a42;
+  --accent:#29b6d1; --accent-fg:#06141a; --petroleo:#008ba8; --gold:#ffde59; --gold-soft:rgba(255,222,89,.13); --danger:#f07a6b;
+  --t0:#6b93f0; --t1:#3cc0bf; --t2:#b48cf0; --t3:#f07a6b; --t4:#ffc94a;
   --r-red:#d9534f; --r-orange:#e2802a; --r-yellow:#c29d0d; --r-green:#2f9e4f; --r-teal:#178a8a; --r-blue:#2563c9;
-  --inscr:"Cinzel",Georgia,serif; --display:"Barlow Condensed","Arial Narrow",Arial,sans-serif; --body:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --display:"Barlow Condensed","Arial Narrow",Arial,sans-serif; --body:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  color-scheme:dark;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#0e1311; --surface:#161d19; --surface-2:#1e2822; --fg:#e7ece8; --muted:#94a299; --line:#29352d;
-  --accent:#2bb5c8; --accent-fg:#04242a; --gold:#e2b843; --gold-soft:#3a3218; --danger:#ee6d5f;
-  --t0:#6b93f0; --t1:#3cc0bf; --t2:#a77ae8; --t3:#ee7a62; --t4:#e5b443; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#0e1311; --surface:#161d19; --surface-2:#1e2822; --fg:#e7ece8; --muted:#94a299; --line:#29352d;
-  --accent:#2bb5c8; --accent-fg:#04242a; --gold:#e2b843; --gold-soft:#3a3218; --danger:#ee6d5f;
-  --t0:#6b93f0; --t1:#3cc0bf; --t2:#a77ae8; --t3:#ee7a62; --t4:#e5b443; color-scheme:dark}
 *{box-sizing:border-box}
 html,body{background:var(--bg);color:var(--fg)}
 body{font-family:var(--body);font-size:15px;line-height:1.45;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 56px}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
 .wrap{max-width:760px;margin:0 auto}
-header{padding-block:22px 8px;display:flex;flex-direction:column;gap:8px}
+body{overflow-x:clip}
+.hero{position:relative;margin-inline:calc(50% - 50vw);background:var(--gold);clip-path:polygon(0 0,100% 0,100% calc(100% - 64px),0 100%);margin-bottom:6px}
+.hero .sky{position:absolute;inset:0;clip-path:polygon(0 0,100% 0,100% calc(100% - 74px),0 calc(100% - 10px));background:var(--petroleo)}
+.hero .sky svg{width:100%;height:100%;display:block}
+.hero .bolt{position:absolute;top:22px;right:max(16px,calc(50vw - 380px));width:30px;height:auto}
+header{position:relative;max-width:760px;margin:0 auto;padding:22px max(16px,env(safe-area-inset-right,0px)) 96px max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:8px}
 .brand{display:flex;align-items:center;gap:14px}
-.logo{width:72px;height:auto;flex:none;filter:drop-shadow(0 2px 6px rgba(0,0,0,.15))}
+.logo{width:76px;height:auto;flex:none;filter:drop-shadow(0 4px 10px rgba(0,0,0,.35))}
 .when{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.when span{font:700 13px var(--body);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px 10px}
+.when span{font:700 15px var(--display);letter-spacing:.12em;text-transform:uppercase;background:rgba(6,20,26,.55);border:1px solid rgba(255,255,255,.18);border-radius:4px;padding:3px 10px}
 .when span:empty{display:none}
-#countdown{background:var(--accent)!important;color:var(--accent-fg);border-color:var(--accent)!important}
-.kicker{font:700 12px var(--body);letter-spacing:2.5px;text-transform:uppercase;color:var(--gold)}
-h1{font-family:var(--inscr);font-weight:800;font-size:clamp(30px,8vw,46px);line-height:1;margin:0;letter-spacing:1px;text-wrap:balance}
-#sub{color:var(--muted);font-size:14px;margin:0}
-.champ{margin-top:10px;display:flex;align-items:center;gap:10px;background:var(--gold-soft);border:1px solid var(--gold);border-radius:12px;padding:10px 14px;font-weight:600}
+#countdown{background:var(--gold)!important;color:var(--bg);border-color:var(--gold)!important}
+.kicker{font:700 15px var(--display);letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+h1{font:italic 900 clamp(40px,11vw,68px)/.9 var(--display);text-transform:uppercase;margin:2px 0 0;text-wrap:balance;text-shadow:0 2px 18px rgba(3,49,61,.6)}
+#sub{color:#d3e2e5;font-size:14px;margin:0}
+.champ{margin-top:10px;display:flex;align-items:center;gap:10px;background:var(--gold);color:var(--bg);clip-path:polygon(2% 0,100% 0,98% 100%,0 100%);padding:10px 20px;font-weight:700}
 .champ b{font:800 22px var(--display);text-transform:uppercase;letter-spacing:.5px}
 nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;gap:2px;padding-block:10px;border-bottom:1px solid var(--line);margin-bottom:16px;overflow-x:auto;scrollbar-width:none}
 nav.tabs::-webkit-scrollbar{display:none}
 .tab{font:700 17px var(--display);text-transform:uppercase;letter-spacing:.6px;background:none;border:0;color:var(--muted);padding:8px 11px;border-radius:8px;cursor:pointer;white-space:nowrap}
-.tab[aria-selected="true"]{color:var(--fg);background:var(--surface-2)}
+.tab[aria-selected="true"]{color:var(--fg);background:none;box-shadow:inset 0 -3px 0 var(--gold);border-radius:0}
 .btn{font:600 14px var(--body);border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:10px;padding:9px 14px;cursor:pointer;min-height:42px}
 .btn.primary{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
 .btn.ghost{background:transparent}
@@ -60,7 +58,7 @@ nav.tabs::-webkit-scrollbar{display:none}
 .banner{background:var(--surface-2);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--muted);margin-bottom:12px}
 .section{display:flex;flex-direction:column;gap:12px}
 .sec-h{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
-h2{font:800 24px var(--display);text-transform:uppercase;letter-spacing:.5px;margin:0}
+h2{font:italic 900 28px var(--display);text-transform:uppercase;letter-spacing:.5px;margin:0}
 h3{font:800 18px var(--display);text-transform:uppercase;letter-spacing:.4px;margin:0}
 .box{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
 .empty{background:var(--surface);border:1px dashed var(--line);border-radius:12px;padding:28px 18px;text-align:center;color:var(--muted);display:flex;flex-direction:column;gap:10px;align-items:center}
@@ -221,21 +219,32 @@ input,select{font:500 15px var(--body);color:var(--fg);background:var(--surface)
 .dt-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
 .dt-x{font-size:13px;color:var(--muted)}
 textarea{font:500 15px var(--body);color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px;width:100%;min-height:80px;resize:vertical}
-.authbar{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);flex-wrap:wrap}
+.authbar{display:flex;align-items:center;gap:8px;font-size:13px;color:#d3e2e5;flex-wrap:wrap}
+.foot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font:700 15px var(--display);letter-spacing:.16em;color:var(--muted)}
 .authbar b{color:var(--accent)}
 </style>
 <style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
 </head>
 <body>
 <div class="wrap">
+<div class="hero"><div class="sky"><svg viewBox="0 0 1080 460" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+<defs><linearGradient id="hg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#03313d"/><stop offset=".55" stop-color="#006b82"/><stop offset="1" stop-color="#008ba8"/></linearGradient>
+<filter id="hc" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.0028 0.0085" numOctaves="6" seed="12" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  2.6 0 0 0 -1.05" result="a"/><feFlood flood-color="#8fdcea" result="c"/><feComposite in="c" in2="a" operator="in"/></filter>
+<filter id="he" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.004 0.011" numOctaves="5" seed="31" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  2.4 0 0 0 -0.95" result="a"/><feFlood flood-color="#06141a" result="c"/><feComposite in="c" in2="a" operator="in"/></filter>
+<filter id="hb" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="10"/></filter>
+<radialGradient id="hr" gradientUnits="userSpaceOnUse" cx="950" cy="10" r="640"><stop offset="0" stop-color="#ffde59" stop-opacity=".55"/><stop offset=".3" stop-color="#ffde59" stop-opacity=".16"/><stop offset="1" stop-color="#ffde59" stop-opacity="0"/></radialGradient></defs>
+<rect width="1080" height="460" fill="url(#hg)"/><rect width="1080" height="460" filter="url(#he)" opacity=".75"/><rect width="1080" height="460" filter="url(#hc)" opacity=".6"/>
+<g fill="#fff6d0" opacity=".16" filter="url(#hb)"><polygon points="960,-20 1000,-20 480,460 360,460"/><polygon points="975,-20 995,-20 680,460 610,460"/><polygon points="985,-20 1005,-20 120,460 0,460"/><polygon points="990,-20 1010,-20 860,460 815,460"/></g>
+<rect width="1080" height="460" fill="url(#hr)"/></svg></div>
+<svg class="bolt" viewBox="0 0 80 140" aria-hidden="true"><path d="M48 0 L10 78 L36 78 L22 140 L72 54 L44 54 L62 0 Z" fill="#ffde59"/></svg>
   <header>
     <div class="brand"><img class="logo" alt="Escudo da PDD" src="logo.svg">
-      <div><div class="kicker">PDD apresenta · 12ª edição</div><h1>Copa dos Deuses</h1>
+      <div><div class="kicker">12ª Copa · Pelada dos Deuses</div><h1>Copa dos Deuses</h1>
       <div class="when"><span>Qua, 02/12</span><span>21h às 00h</span><span id="countdown"></span></div></div></div>
     <p id="sub">Carregando…</p>
     <div id="champ"></div>
     <div id="auth" class="authbar"></div>
-  </header>
+  </header></div>
   <nav class="tabs" role="tablist" aria-label="Seções">
     <button class="tab" role="tab" id="t-tabela" aria-selected="true">Tabela</button>
     <button class="tab" role="tab" id="t-jogos" aria-selected="false">Jogos</button>
@@ -246,6 +255,7 @@ textarea{font:500 15px var(--body);color:var(--fg);background:var(--surface);bor
   </nav>
   <div id="status" class="banner" hidden></div>
   <main id="view"></main>
+  <footer class="foot"><span>O OLIMPO É AQUI</span><span>@PELADADOSDEUSES_</span></footer>
 </div>
 
 <script>
@@ -446,7 +456,7 @@ function viewJogos(){
   const lg=leagueGames(),by={};lg.forEach(j=>(by[j.rodada]??=[]).push(j));
   const folga=r=>{const ins=new Set(by[r].flatMap(j=>[j.casa,j.fora]));const t=teams().find(t=>!ins.has(t.id));return t?`folga: ${esc(t.nome)}`:""};
   let h='<div class="section">';
-  h+=`<p class="note">Tudo numa noite: 13 jogos entre 21h e 00h, dá uns 13 minutos por jogo contando a troca.</p>`;
+  h+=`<p class="note">Tudo numa noite: 13 jogos de 8 minutos entre 21h e 00h, com folga pra troca e shoot-out.</p>`;
   for(const r of Object.keys(by).sort((a,b)=>a-b)){
     h+=`<div class="round"><div class="round-h"><h3>Rodada ${r}</h3><small>${folga(r)}</small></div>${by[r].map(gameCard).join("")}</div>`;
   }
