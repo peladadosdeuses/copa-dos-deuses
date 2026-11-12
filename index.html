@@ -6,7 +6,7 @@
 <title>12ª Copa dos Deuses</title>
 <meta name="description" content="Copa dos Deuses da PDD: tabela, jogos, notas e craque da copa.">
 <meta property="og:title" content="Copa dos Deuses">
-<meta property="og:description" content="Tabela, jogos e notas da Copa dos Deuses da PDD. 02/12, 21h às 00h.">
+<meta property="og:description" content="Tabela, jogos e notas da Copa dos Deuses da PDD. 02/12, 21h às 00h, no Clube Português do Recife.">
 <meta property="og:image" content="logo.png">
 <link rel="icon" type="image/svg+xml" href="logo.svg">
 <meta name="theme-color" content="#00788c">
@@ -478,7 +478,7 @@ function viewNotas(){
 function viewRegras(){
   const kv=(k,v,neg)=>`<div class="kv"><span>${k}</span><span class="${neg?"nv":"pv"}">${neg?"−":"+"}${dec(v)}</span></div>`;
   return `<div class="rules">
-    <div class="card"><h3>Formato</h3><div class="kv"><span>Times</span><span>5, sorteados por nível</span></div><div class="kv"><span>Nível de cada jogador</span><span>1 a 10, pela ditadura</span></div><div class="kv"><span>Fase de pontos</span><span>todos contra todos, 4 jogos cada</span></div><div class="kv"><span>Duração</span><span>8 minutos por jogo</span></div><div class="kv"><span>Vitória / empate</span><span>3 / 1 ponto</span></div><div class="kv"><span>Semifinais</span><span>1º × 4º, 2º × 3º</span></div><div class="kv"><span>5º colocado</span><span>agradece, xinga o próprio time e vaza</span></div><div class="kv"><span>Final</span><span>vencedores das semis</span></div><div class="kv"><span>Empate no mata-mata</span><span>shoot-out</span></div><div class="kv"><span>Quando</span><span>02/12, 21h às 00h</span></div><div class="kv"><span>Desempate</span><span>vitórias, saldo, gols</span></div><div class="kv"><span>Regras de jogo</span><span>as mesmas da pelada de quarta</span></div></div>
+    <div class="card"><h3>Formato</h3><div class="kv"><span>Times</span><span>5, sorteados por nível</span></div><div class="kv"><span>Nível de cada jogador</span><span>1 a 10, pela ditadura</span></div><div class="kv"><span>Fase de pontos</span><span>todos contra todos, 4 jogos cada</span></div><div class="kv"><span>Duração</span><span>8 minutos por jogo</span></div><div class="kv"><span>Vitória / empate</span><span>3 / 1 ponto</span></div><div class="kv"><span>Semifinais</span><span>1º × 4º, 2º × 3º</span></div><div class="kv"><span>5º colocado</span><span>agradece, xinga o próprio time e vaza</span></div><div class="kv"><span>Final</span><span>vencedores das semis</span></div><div class="kv"><span>Empate no mata-mata</span><span>shoot-out</span></div><div class="kv"><span>Quando</span><span>02/12, 21h às 00h</span></div><div class="kv"><span>Onde</span><span>Clube Português do Recife</span></div><div class="kv"><span>Desempate</span><span>vitórias, saldo, gols</span></div><div class="kv"><span>Regras de jogo</span><span>as mesmas da pelada de quarta</span></div></div>
     <div class="card"><h3>Nota por lance</h3><div class="kv"><span>Base</span><span>${dec(R.base)}</span></div>${kv("Gol",R.gol)}${kv("Assistência",R.ast)}${kv("Defesa difícil",R.def)}${kv("Pênalti defendido",R.pen)}${kv("Clean sheet",R.cs)}${kv("Gol contra, pênalti perdido ou erro que gera gol",R.erro,1)}${kv("Vermelho",R.verm,1)}</div>
     <div class="card"><h3>Contexto</h3>${kv("Gol da vitória",R.vit)}${kv("Gol de empate ou virada no fim",R.emp)}${kv("Gol na final (cada)",R.fin)}<div class="kv"><span>Ajuste da ditadura</span><span>−1 a +1</span></div><div class="kv"><span>Peso da semi / final</span><span>${dec(PESO.semi,0)}x / ${dec(PESO.final)}x</span></div><div class="kv"><span>Teto por jogo</span><span>10</span></div></div>
     <div class="card"><h3>Escala</h3><div class="legend">${[5.5,6.2,6.7,7.4,8.3,9.2].map(n=>badge(n)).join("")}</div><p class="note">Abaixo de 6 foi mal, de 7 pra cima jogou bem, 9 ou mais foi de outro planeta.</p></div>
@@ -634,7 +634,7 @@ const view=document.getElementById("view");
 function header(){
   const sub=document.getElementById("sub"),champ=document.getElementById("champ");
   if(!loadedCfg){sub.textContent="Carregando…";return}
-  if(!teams().length){sub.textContent="5 times, todos contra todos, 4 vão pra semi.";champ.innerHTML="";return}
+  if(!teams().length){sub.textContent="02/12, 21h · Clube Português do Recife · 5 times, 4 vão pra semi.";champ.innerHTML="";return}
   const lg=leagueGames(),done=lg.filter(played).length,f=jogos["final"];
   if(f&&played(f)){const w=winner(f);
     champ.innerHTML=w?`<div class="champ">🏆 Campeão: <b style="color:${tcolor(w)}">${esc(team(w)?.nome)}</b></div>`:"";
