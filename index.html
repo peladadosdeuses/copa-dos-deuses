@@ -478,7 +478,7 @@ function viewNotas(){
 function viewRegras(){
   const kv=(k,v,neg)=>`<div class="kv"><span>${k}</span><span class="${neg?"nv":"pv"}">${neg?"−":"+"}${dec(v)}</span></div>`;
   return `<div class="rules">
-    <div class="card"><h3>Formato</h3><div class="kv"><span>Times</span><span>5, sorteados por estrela</span></div><div class="kv"><span>Fase de pontos</span><span>todos contra todos</span></div><div class="kv"><span>Vitória / empate</span><span>3 / 1 ponto</span></div><div class="kv"><span>Semifinais</span><span>1º × 4º, 2º × 3º</span></div><div class="kv"><span>Final</span><span>vencedores das semis</span></div><div class="kv"><span>Empate no mata-mata</span><span>pênaltis</span></div><div class="kv"><span>Quando</span><span>02/12, 21h às 00h</span></div><div class="kv"><span>Desempate</span><span>vitórias, saldo, gols</span></div></div>
+    <div class="card"><h3>Formato</h3><div class="kv"><span>Times</span><span>5, sorteados por nível</span></div><div class="kv"><span>Nível de cada jogador</span><span>1 a 10, pela ditadura</span></div><div class="kv"><span>Fase de pontos</span><span>todos contra todos, 4 jogos cada</span></div><div class="kv"><span>Duração</span><span>8 minutos por jogo</span></div><div class="kv"><span>Vitória / empate</span><span>3 / 1 ponto</span></div><div class="kv"><span>Semifinais</span><span>1º × 4º, 2º × 3º</span></div><div class="kv"><span>5º colocado</span><span>agradece, xinga o próprio time e vaza</span></div><div class="kv"><span>Final</span><span>vencedores das semis</span></div><div class="kv"><span>Empate no mata-mata</span><span>shoot-out</span></div><div class="kv"><span>Quando</span><span>02/12, 21h às 00h</span></div><div class="kv"><span>Desempate</span><span>vitórias, saldo, gols</span></div><div class="kv"><span>Regras de jogo</span><span>as mesmas da pelada de quarta</span></div></div>
     <div class="card"><h3>Nota por lance</h3><div class="kv"><span>Base</span><span>${dec(R.base)}</span></div>${kv("Gol",R.gol)}${kv("Assistência",R.ast)}${kv("Defesa difícil",R.def)}${kv("Pênalti defendido",R.pen)}${kv("Clean sheet",R.cs)}${kv("Gol contra, pênalti perdido ou erro que gera gol",R.erro,1)}${kv("Vermelho",R.verm,1)}</div>
     <div class="card"><h3>Contexto</h3>${kv("Gol da vitória",R.vit)}${kv("Gol de empate ou virada no fim",R.emp)}${kv("Gol na final (cada)",R.fin)}<div class="kv"><span>Ajuste da ditadura</span><span>−1 a +1</span></div><div class="kv"><span>Peso da semi / final</span><span>${dec(PESO.semi,0)}x / ${dec(PESO.final)}x</span></div><div class="kv"><span>Teto por jogo</span><span>10</span></div></div>
     <div class="card"><h3>Escala</h3><div class="legend">${[5.5,6.2,6.7,7.4,8.3,9.2].map(n=>badge(n)).join("")}</div><p class="note">Abaixo de 6 foi mal, de 7 pra cima jogou bem, 9 ou mais foi de outro planeta.</p></div>
@@ -545,7 +545,7 @@ function copaResumo(){
   const w=winner(f),v=w===f.casa?f.fora:f.casa,t=team(w),{ok}=standingsPlayers();
   const art=Object.values(standingsPlayers()).flat().filter(s=>s.g>0).sort((a,b)=>b.g-a.g)[0];
   return {nome:"12ª Copa dos Deuses",data:"02/12/2026",campeao:t?.nome||"",jogadores:[...(t?.goleiro?[t.goleiro]:[]),...(t?.jogadores||[])].join(", "),
-    vice:team(v)?.nome||"",placar:`${f.gc} × ${f.gf}${f.gc===f.gf?" (pênaltis)":""}`,craque:ok[0]?`${ok[0].p} (${dec(ok[0].med,2)})`:"",artilheiro:art?`${art.p} (${art.g} gols)`:"",obs:""};
+    vice:team(v)?.nome||"",placar:`${f.gc} × ${f.gf}${f.gc===f.gf?" (shoot-out)":""}`,craque:ok[0]?`${ok[0].p} (${dec(ok[0].med,2)})`:"",artilheiro:art?`${art.p} (${art.g} gols)`:"",obs:""};
 }
 const COR={verde:"#3fae49",vermelho:"#e0352b",azul:"#6bb6f0",preto:"#111",laranja:"#f28a1e",amarelo:"#f5d33a",branco:"#fff"};
 const dot=t=>`<span class="dot" style="background:${COR[normName(t)]||"var(--muted)"}"></span>`;
@@ -616,7 +616,7 @@ function viewForm(){
   return `<form class="form" id="gform" novalidate>
     <div><div class="kicker">${e.tipo==="liga"?"Rodada "+e.rodada:KO.find(k=>k.id===e.id).nome}</div><h2>Resultado e notas</h2></div>
     <div class="fgrid"><label class="f">${esc(team(e.casa)?.nome)}<input class="bigsc" id="f-gc" type="number" min="0" inputmode="numeric" value="${e.gc}"></label><span class="vs">×</span><label class="f">${esc(team(e.fora)?.nome)}<input class="bigsc" id="f-gf" type="number" min="0" inputmode="numeric" value="${e.gf}"></label></div>
-    ${e.tipo!=="liga"&&e.gc!==""&&e.gc===e.gf?`<label class="f">Quem venceu nos pênaltis?<select id="f-pen"><option value="">Escolha</option><option value="${e.casa}"${e.pen===e.casa?" selected":""}>${esc(team(e.casa)?.nome)}</option><option value="${e.fora}"${e.pen===e.fora?" selected":""}>${esc(team(e.fora)?.nome)}</option></select></label>`:""}
+    ${e.tipo!=="liga"&&e.gc!==""&&e.gc===e.gf?`<label class="f">Quem venceu no shoot-out?<select id="f-pen"><option value="">Escolha</option><option value="${e.casa}"${e.pen===e.casa?" selected":""}>${esc(team(e.casa)?.nome)}</option><option value="${e.fora}"${e.pen===e.fora?" selected":""}>${esc(team(e.fora)?.nome)}</option></select></label>`:""}
     ${mism?`<div class="warn">Os gols lançados nos jogadores somam ${gC} × ${gF}, diferente do placar.</div>`:""}
     <div><p class="note" style="margin-bottom:6px">Quem jogou? Os dois times já vêm marcados; toque pra tirar.</p><div class="chips">${inGame.map(chip).join("")}</div>
       ${others.length?`<p class="note" style="margin:10px 0 6px">Completou time (outros jogadores)</p><div class="chips">${others.map(chip).join("")}</div>`:""}</div>
@@ -746,7 +746,7 @@ view.addEventListener("submit",async ev=>{
     return}syncForm();
   const e=editing,err=document.getElementById("ferr"),fail=m=>{err.textContent=m;err.hidden=false};
   if(e.gc===""||e.gf==="")return fail("Coloque o placar dos dois times.");
-  if(e.tipo!=="liga"&&e.gc===e.gf&&!e.pen)return fail("Mata-mata empatado: escolha quem venceu nos pênaltis.");
+  if(e.tipo!=="liga"&&e.gc===e.gf&&!e.pen)return fail("Mata-mata empatado: escolha quem venceu no shoot-out.");
   const btn=document.getElementById("save");btn.disabled=true;btn.textContent="Salvando…";
   const linhas=e.linhas.map(l=>{const o={p:l.p};for(const k of ["g","a","gv","ge","def","pen","err"])if(l[k])o[k]=l[k];if(l.cs)o.cs=true;if(l.verm)o.verm=true;if(l.aj)o.aj=l.aj;return o});
   const body={tipo:e.tipo,casa:e.casa,fora:e.fora,jogado:true,gc:+e.gc,gf:+e.gf,linhas,atualizado:new Date().toISOString()};
