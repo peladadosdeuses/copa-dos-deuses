@@ -500,7 +500,25 @@ function viewRegras(){
 /* ===== galeria dos campeões ===== */
 // edições antigas fixas no site (não editáveis pela página)
 const HISTORICO=[
-  {nome:"11ª Copa dos Deuses",data:"",campeao:"Brasil",jogadores:"Paulista, Álvaro, Serginho, Papito, Freire, Bruno Mesquita",foto:"fotos/campeoes-11.jpg",ordem:11,fixo:true},
+  {nome:"11ª Copa dos Deuses",data:"",campeao:"Brasil",vice:"Inglaterra",placar:"3 × 0",artilheiro:"Brunão (5 gols)",jogadores:"Paulista, Álvaro, Serginho, Papito, Freire, Bruno Mesquita",foto:"fotos/campeoes-11.jpg",ordem:11,fixo:true,
+   detalhe:{
+    formato:"Dois grupos de 3. Jogos de 10 minutos na fase de grupos; semis, final e 3º lugar com 2 tempos de 8 minutos.",
+    grupos:[{nome:"Grupo A",tabela:[["Inglaterra",7,2,1,0,5,2,3],["Espanha",7,2,1,0,3,1,2],["Croácia",6,2,0,1,4,2,2]]},
+            {nome:"Grupo B",tabela:[["Brasil",4,1,1,1,4,3,1],["França",1,0,1,2,1,4,-3],["Alemanha",0,0,0,3,0,5,-5]]}],
+    rodadas:[[["Inglaterra",2,0,"Alemanha"],["Croácia",2,0,"França"],["Espanha",2,1,"Brasil"]],
+             [["Inglaterra",2,1,"França"],["Croácia",0,2,"Brasil"],["Espanha",1,0,"Alemanha"]],
+             [["Inglaterra",1,1,"Brasil"],["Croácia",2,0,"Alemanha"],["Espanha",0,0,"França"]]],
+    semis:[["Inglaterra",1,0,"Espanha"],["França",0,4,"Brasil"]],
+    final:["Brasil",3,0,"Inglaterra"],
+    terceiro:["Espanha",2,3,"França"],
+    cols:["G","A"],
+    times:[
+     {nome:"Brasil",jog:[["Paulista",2,2],["Papito",1,0],["Brunão",5,2],["Vitu",1,1],["Álvaro",2,1],["Luan",0,0]]},
+     {nome:"Inglaterra",jog:[["Loureiro",1,0],["Laison",1,1],["Pedro Sá",3,0],["JV Anselmo",1,0],["VH",0,0],["Miguel Ângelo",0,0]]},
+     {nome:"Croácia",jog:[["Igor Leo",2,1],["Pajé",0,1],["Mesquita",1,1],["Serginho",1,0],["Rijo",0,0],["Heldinho",0,0]]},
+     {nome:"Espanha",jog:[["Acerola",1,0],["Romero",2,0],["JV Freitas",0,1],["Pilavum",0,0],["Vini Cabire",0,0],["Arthur",1,0]],obs:"A planilha tem 4 gols; o time fez 5."},
+     {nome:"França",jog:[["KDU",0,0],["Claudinho",1,0],["Igor Fofo",0,1],["Manaus",1,0],["Bruno Minguez",0,0],["Gui Sheik",0,0]],obs:"A planilha tem 2 gols; o time fez 4."},
+     {nome:"Alemanha",jog:[["Alberto",0,0],["Saulo",0,0],["Adriano",0,0],["Ash",0,0],["Freire",0,0],["Tufão",0,0]]}]}},
   {nome:"10ª Copa dos Deuses",data:"",campeao:"Espanha",jogadores:"Matheus Santos (goleiro), Papito, Claudinho, Léo Braga, Vitu, Ermírio, Lucas Ferraz",foto:"fotos/campeoes-10.jpg",ordem:10,fixo:true},
   {nome:"9ª Copa dos Deuses",data:"",campeao:"França",vice:"Inglaterra",placar:"2 × 0",artilheiro:"Vini Rios, Daví Silva e Lucas Eduardo (3 gols)",jogadores:"Alysson (goleiro), Acerola, Vini Rios, Adriano, Anselmo, Rocha, VH",foto:"fotos/campeoes-09.jpg",ordem:9,fixo:true,
    detalhe:{
@@ -614,7 +632,7 @@ function copaResumo(){
   return {nome:"12ª Copa dos Deuses",data:"02/12/2026",campeao:t?.nome||"",jogadores:[...(t?.goleiro?[t.goleiro]:[]),...(t?.jogadores||[])].join(", "),
     stats:liveStats(),vice:team(v)?.nome||"",placar:`${f.gc} × ${f.gf}${f.gc===f.gf?" (shoot-out)":""}`,craque:ok[0]?`${ok[0].p} (${dec(ok[0].med,2)})`:"",artilheiro:art?`${art.p} (${art.g} gols)`:"",obs:""};
 }
-const COR={verde:"#3fae49",vermelho:"#e0352b",azul:"#6bb6f0",preto:"#111",laranja:"#f28a1e",amarelo:"#f5d33a",branco:"#fff",holanda:"#f28a1e",argentina:"#75aadb",brasil:"#f5d33a",alemanha:"#9aa3a8",italia:"#2f6fd0",inglaterra:"#ececec",espanha:"#c8102e",franca:"#2a4ea0"};
+const COR={verde:"#3fae49",vermelho:"#e0352b",azul:"#6bb6f0",preto:"#111",laranja:"#f28a1e",amarelo:"#f5d33a",branco:"#fff",holanda:"#f28a1e",argentina:"#75aadb",brasil:"#f5d33a",alemanha:"#9aa3a8",italia:"#2f6fd0",inglaterra:"#ececec",croacia:"#d94b4b",espanha:"#c8102e",franca:"#2a4ea0"};
 const dot=t=>`<span class="dot" style="background:${COR[normName(t)]||"var(--muted)"}"></span>`;
 function detalheHTML(d){
   const jogo=([a,x,y,b])=>`<div class="dt-jogo">${dot(a)}${esc(a)} <span class="dt-pl">${x===""?"×":esc(String(x))+(x==="anulado"?"":" × "+esc(String(y)))}</span> ${esc(b)}${dot(b)}</div>`;
@@ -625,7 +643,7 @@ function detalheHTML(d){
   if(d.tabela)h+=tab("Classificação",d.tabela);
   if(d.grupos)h+=`<div class="dt-times">${d.grupos.map(g=>tab(esc(g.nome),g.tabela)).join("")}</div>`;
   if(d.rodadas)h+=`<div><h4>Rodadas</h4><div class="dt-rod">${d.rodadas.map((r,i)=>`<div><b>${i+1}ª rodada</b>${r.map(jogo).join("")}</div>`).join("")}</div></div>`;
-  if(d.semis||d.final)h+=`<div><h4>Mata-mata</h4><div class="dt-rod">${d.semis?`<div><b>Semifinais</b>${d.semis.map(jogo).join("")}</div>`:""}${d.final?`<div><b>Final</b>${jogo(d.final)}</div>`:""}</div></div>`;
+  if(d.semis||d.final)h+=`<div><h4>Mata-mata</h4><div class="dt-rod">${d.semis?`<div><b>Semifinais</b>${d.semis.map(jogo).join("")}</div>`:""}${d.final?`<div><b>Final</b>${jogo(d.final)}</div>`:""}${d.terceiro?`<div><b>3º lugar</b>${jogo(d.terceiro)}</div>`:""}</div></div>`;
   if(d.times)h+=`<div><h4>Números por time</h4><div class="dt-times">${d.times.map(t=>`<div class="dt-time"><h5>${dot(t.nome)}${esc(t.nome)}</h5><div class="dt-scroll"><table><tr><th></th>${d.cols.map(c=>`<th>${c}</th>`).join("")}</tr>${t.jog.map(j=>`<tr><td>${esc(j[0])}</td>${j.slice(1).map(v=>`<td>${esc(String(v))}</td>`).join("")}</tr>`).join("")}</table></div>${t.obs?`<div class="dt-x">${esc(t.obs)}</div>`:""}</div>`).join("")}</div></div>`;
   if(d.artilheiros||d.garcons)h+=`<div class="dt-list">${d.artilheiros?lista("Artilheiros",d.artilheiros,["gol","gols"]):""}${d.garcons?lista("Garçons",d.garcons,["assist.","assist."]):""}</div>`;
   if(d.selecao)h+=`<div><h4>Seleção dos Deuses</h4><div class="dt-scroll"><table>${d.selecao.map(([p,n])=>`<tr><td>${esc(p)}</td><td style="text-align:left;font-weight:600">${esc(n)}</td></tr>`).join("")}</table></div></div>`;
