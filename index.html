@@ -501,12 +501,12 @@ function viewRegras(){
 // edições antigas fixas no site (não editáveis pela página)
 const HISTORICO=[
   {nome:"11ª Copa dos Deuses",data:"",campeao:"Brasil",jogadores:"Paulista, Álvaro, Serginho, Papito, Freire, Bruno Mesquita",foto:"fotos/campeoes-11.jpg",ordem:11,fixo:true},
-  {nome:"10ª Copa dos Deuses",data:"",campeao:"Espanha",jogadores:"Papito, Claudinho, Léo Braga, Vitu, Ermírio",obs:"Elenco ainda com um nome a confirmar.",foto:"fotos/campeoes-10.jpg",ordem:10,fixo:true},
+  {nome:"10ª Copa dos Deuses",data:"",campeao:"Espanha",jogadores:"Matheus Santos (goleiro), Papito, Claudinho, Léo Braga, Vitu, Ermírio, Lucas Ferraz",foto:"fotos/campeoes-10.jpg",ordem:10,fixo:true},
   {nome:"9ª Copa dos Deuses",data:"",campeao:"França",jogadores:"Alysson (goleiro), Acerola, Vini Rios, Adriano, Anselmo, Rocha, VH",foto:"fotos/campeoes-09.jpg",ordem:9,fixo:true},
-  {nome:"8ª Copa dos Deuses",data:"",campeao:"Holanda",jogadores:"Freire, Tufão, Gustavo Markus, Acerola, Juninho, Sales",foto:"fotos/campeoes-08.jpg",ordem:8,fixo:true},
+  {nome:"8ª Copa dos Deuses",data:"",campeao:"Holanda",jogadores:"Matheus Santos (goleiro), Freire, Tufão, Gustavo Markus, Acerola, Juninho, Sales",foto:"fotos/campeoes-08.jpg",ordem:8,fixo:true},
   {nome:"7ª Copa dos Deuses",data:"",campeao:"Argentina",jogadores:"Léo Nogueira, Raoni, Brennand, Rodrigo Paiva, Sales, Igor, Pi",foto:"fotos/campeoes-07.jpg",ordem:7,fixo:true},
   {nome:"6ª Copa dos Deuses",data:"",campeao:"Preto",jogadores:"Rafael Melo, Daví Silva, Marcelo Lopes, VG, Pedro Sá, VH, Pi",foto:"fotos/campeoes-06.jpg",ordem:6,fixo:true},
-  {nome:"5ª Copa dos Deuses",data:"10/07/2022",campeao:"Laranja",craque:"Maradona",artilheiro:"Paulista (4 gols)",jogadores:"Murilo (goleiro), Belo, Pajé, Maradona, Igor, Acerola, Vale",foto:"fotos/campeoes-05.jpg",ordem:5,fixo:true,
+  {nome:"5ª Copa dos Deuses",data:"10/07/2022",campeao:"Holanda",craque:"Maradona",artilheiro:"Paulista (4 gols)",jogadores:"Murilo (goleiro), Belo, Pajé, Maradona, Igor, Acerola, Vale",foto:"fotos/campeoes-05.jpg",ordem:5,fixo:true,
    detalhe:{
     artilheiros:[["Paulista","Branco",4],["Daví Silva","Azul",3],["Vinícius","Amarelo",3],["Magleibson","Preto",3],["Belo","Laranja",2],["Vale","Laranja",2],["Tufão","Azul",2]],
     garcons:[["Pepa","Amarelo",3],["Daví Silva","Azul",2],["Acerola","Laranja",2],["Pajé","Laranja",1],["Marcelo Lopes","Branco",1],["Ermírio","Branco",1],["Freire","Azul",1],["Tufão","Azul",1],["Luís Felipe","Preto",1],["Magleibson","Preto",1]],
@@ -538,8 +538,8 @@ const HISTORICO=[
      {nome:"Vermelho",jog:[["Papito",2,1],["Vinícius",4,1],["Pedro Lago",1,1],["Heldinho",0,0],["Jay",2,1]]},
      {nome:"Verde",jog:[["Pajé",1,2],["Luis Felipe",2,0],["Vitor Hugo",0,2],["Nogueira",2,0],["Ítalo",1,2]]},
      {nome:"Preto",jog:[["KDU",1,0],["Vale",1,1],["Vitu",1,0],["Gui Sheik",0,0],["Murilo",1,1]]}]}},
-  {nome:"2ª Copa dos Deuses",data:"",campeao:"Preto",jogadores:"Papito, George, Léo Braga, Solado",obs:"Elenco com mais dois nomes a confirmar.",foto:"fotos/campeoes-02.jpg",ordem:2,fixo:true},
-  {nome:"1ª Copa dos Deuses",data:"",campeao:"Vermelho",jogadores:"Nogueira, Solado, Freire, VH, Papito",foto:"fotos/campeoes-01.jpg",ordem:1,fixo:true}
+  {nome:"2ª Copa dos Deuses",data:"",campeao:"Preto",jogadores:"Guabiraba (goleiro), Papito, George, Léo Braga, Solado",obs:"Elenco com um nome a confirmar.",foto:"fotos/campeoes-02.jpg",ordem:2,fixo:true},
+  {nome:"1ª Copa dos Deuses",data:"",campeao:"Vermelho",jogadores:"Nogueira, Solado, Freire, VH, Papito, Tácio",foto:"fotos/campeoes-01.jpg",ordem:1,fixo:true}
 ];
 const normName=x=>x.replace(/\s*\(.*?\)\s*/g,"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
 const edNum=e=>{const m=/(\d+)\s*ª/.exec(e.nome||"");return m?+m[1]:null};
