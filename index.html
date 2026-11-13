@@ -185,6 +185,8 @@ input,select{font:500 15px var(--body);color:var(--fg);background:var(--surface)
 .ed-roster{display:flex;flex-wrap:wrap;gap:6px}
 .ed-roster span{background:var(--surface-2);border-radius:999px;padding:3px 10px;font-size:13px}
 .ed-foto{display:block;width:100%;max-height:520px;object-fit:cover;object-position:center 30%;border-bottom:1px solid var(--line)}
+.hof2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:12px}
+.hof2 .box{margin:0}
 .lords-h{display:flex;justify-content:space-between;align-items:baseline;padding:12px 14px;border-bottom:1px solid var(--line)}
 .lord{display:grid;grid-template-columns:40px minmax(0,1fr);gap:10px;align-items:center;padding:9px 14px;border-top:1px solid var(--line)}
 .lord:nth-child(2){border-top:0}
@@ -550,12 +552,37 @@ function titulos(){
     (m[k]??={nome:nm,eds:[]}).eds.push(edNum(e)??e.nome)}
   return m;
 }
+/* números de todas as copas: somados dos dados de cada edição + a copa em andamento */
+const ALIAS={"vitor hugo":"vh","luis felipe":"luis felipe"};
+const keyOf=n=>{const k=normName(n);return ALIAS[k]||k};
+function liveStats(){const m={};for(const j of allRatedGames())for(const l of j.linhas){const o=(m[l.p]??=[l.p,0,0]);o[1]+=l.g||0;o[2]+=l.a||0}return Object.values(m).filter(r=>r[1]||r[2])}
+function carreira(){
+  const m={},fontes=[],add=(nome,g,a,ed)=>{if(!g&&!a)return;const k=keyOf(nome),o=(m[k]??={nome:nome.replace(/\s*\(.*?\)\s*/g,"").trim(),g:0,a:0,eds:new Set()});o.g+=g;o.a+=a;o.eds.add(ed)};
+  const all=[...HISTORICO,...galeria];
+  for(const e of all){const ed=edNum(e)??e.nome,d=e.detalhe;let ok=false,parcial=false;
+    if(d?.times){for(const t of d.times)for(const j of t.jog)add(j[0],+j[1]||0,+j[2]||0,ed);ok=true}
+    else if(e.stats?.length){for(const r of e.stats)add(r[0],r[1],r[2],ed);ok=true}
+    else if(d?.artilheiros||d?.garcons){const gm={};for(const r of d.artilheiros||[])(gm[keyOf(r[0])]??=[r[0],0,0])[1]=r[2];for(const r of d.garcons||[])(gm[keyOf(r[0])]??=[r[0],0,0])[2]=r[2];for(const r of Object.values(gm))add(r[0],r[1],r[2],ed);ok=parcial=true}
+    if(ok)fontes.push({ed,parcial})}
+  if(!all.some(e=>e.nome==="12ª Copa dos Deuses")){const ls=liveStats();if(ls.length){for(const r of ls)add(r[0],r[1],r[2],12);fontes.push({ed:12,vivo:true})}}
+  return {lista:Object.values(m),fontes:fontes.sort((a,b)=>(typeof a.ed==="number"?a.ed:99)-(typeof b.ed==="number"?b.ed:99))};
+}
+function carreiraHTML(){
+  const {lista,fontes}=carreira();if(!lista.length)return "";
+  const top=(k,u)=>lista.filter(x=>x[k]>0).sort((a,b)=>b[k]-a[k]||b[k==="g"?"a":"g"]-a[k==="g"?"a":"g"]||a.nome.localeCompare(b.nome)).slice(0,10);
+  const rows=(l,k)=>{let pos=0,last=null;return l.map((x,i)=>{if(x[k]!==last){pos=i+1;last=x[k]}const eds=[...x.eds].sort((a,b)=>a-b).map(n=>typeof n==="number"?n+"ª":esc(n)).join(" · ");
+    return `<div class="lord"><span class="lord-n">${x[k]}</span><div style="min-width:0"><div class="name">${pos}. ${esc(x.nome)}</div><div class="sub">${k==="g"?(x.a?x.a+" assist. · ":""):(x.g?x.g+" gols · ":"")}${eds}</div></div></div>`}).join("")};
+  const fonte=fontes.map(f=>`${typeof f.ed==="number"?f.ed+"ª":esc(f.ed)}${f.parcial?" (só o top)":""}${f.vivo?" (ao vivo)":""}`).join(", ");
+  return `<div class="hof2"><div class="box"><div class="lords-h"><h3>Artilheiros das copas</h3><span class="note">gols</span></div>${rows(top("g"),"g")}</div>
+  <div class="box"><div class="lords-h"><h3>Garçons das copas</h3><span class="note">assistências</span></div>${rows(top("a"),"a")}</div></div>
+  <p class="note" style="margin:-4px 0 14px">Soma automática das copas com números lançados: ${fonte}. Toda copa nova entra aqui sozinha.</p>`;
+}
 function copaResumo(){
   const f=jogos["final"];if(!f||!played(f))return null;
   const w=winner(f),v=w===f.casa?f.fora:f.casa,t=team(w),{ok}=standingsPlayers();
   const art=Object.values(standingsPlayers()).flat().filter(s=>s.g>0).sort((a,b)=>b.g-a.g)[0];
   return {nome:"12ª Copa dos Deuses",data:"02/12/2026",campeao:t?.nome||"",jogadores:[...(t?.goleiro?[t.goleiro]:[]),...(t?.jogadores||[])].join(", "),
-    vice:team(v)?.nome||"",placar:`${f.gc} × ${f.gf}${f.gc===f.gf?" (shoot-out)":""}`,craque:ok[0]?`${ok[0].p} (${dec(ok[0].med,2)})`:"",artilheiro:art?`${art.p} (${art.g} gols)`:"",obs:""};
+    stats:liveStats(),vice:team(v)?.nome||"",placar:`${f.gc} × ${f.gf}${f.gc===f.gf?" (shoot-out)":""}`,craque:ok[0]?`${ok[0].p} (${dec(ok[0].med,2)})`:"",artilheiro:art?`${art.p} (${art.g} gols)`:"",obs:""};
 }
 const COR={verde:"#3fae49",vermelho:"#e0352b",azul:"#6bb6f0",preto:"#111",laranja:"#f28a1e",amarelo:"#f5d33a",branco:"#fff"};
 const dot=t=>`<span class="dot" style="background:${COR[normName(t)]||"var(--muted)"}"></span>`;
@@ -577,6 +604,7 @@ function viewCampeoes(){
   if(canWrite&&res&&!jaTem)h+=`<div class="warn" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><span>🏆 A final acabou: <b>${esc(res.campeao)}</b> campeão.</span><button class="btn sm primary" data-act="galauto">Registrar na galeria</button></div>`;
   const tt=titulos(),top=Object.values(tt).filter(x=>x.eds.length>=2).sort((a,b)=>b.eds.length-a.eds.length||a.nome.localeCompare(b.nome));
   if(top.length)h+=`<div class="box"><div class="lords-h"><h3>Maiores campeões</h3><span class="note">${[...HISTORICO,...galeria].length} copas</span></div>${top.map((x,i)=>`<div class="lord"><span class="lord-n">${x.eds.length}</span><div style="min-width:0"><div class="name">${esc(x.nome)} <span class="tit t${Math.min(x.eds.length,5)}">${TITULO[x.eds.length]||x.eds.length+"×"}</span></div><div class="sub">${x.eds.slice().sort((a,b)=>a-b).map(n=>typeof n==="number"?n+"ª":esc(n)).join(" · ")}</div></div></div>`).join("")}</div>`;
+  h+=carreiraHTML();
   const eds=[...galeria.map((e,i)=>({...e,i})),...HISTORICO].sort((a,b)=>(b.ordem??0)-(a.ordem??0)||String(b.data).localeCompare(String(a.data)));
   if(!eds.length)h+=`<div class="empty"><b>Nenhum campeão ainda</b><span>${canWrite?"Cadastre as copas antigas da PDD em + Adicionar edição. A Copa dos Deuses entra aqui depois da final.":"O primeiro campeão aparece aqui depois da final da Copa dos Deuses."}</span></div>`;
   h+='<div class="hall">'+eds.map(e=>{
@@ -749,6 +777,7 @@ view.addEventListener("submit",async ev=>{
     const data={nome:g("nome"),data:g("data"),campeao:g("campeao"),vice:g("vice"),placar:g("placar"),craque:g("craque"),artilheiro:g("artilheiro"),jogadores:g("jogadores"),obs:g("obs"),foto:/^https:\/\//.test(g("foto"))?g("foto"):""};
     if(!data.nome||!data.campeao){err.textContent="Coloque pelo menos o nome da copa e o time campeão.";err.hidden=false;return}
     data.ordem=galEdit.i==null?Date.now():(galeria[galEdit.i].ordem??0);
+    const prev=galEdit.i==null?galEdit.data:galeria[galEdit.i];if(prev?.stats)data.stats=prev.stats;if(prev?.detalhe)data.detalhe=prev.detalhe;
     const list=galeria.slice();if(galEdit.i==null)list.push(data);else list[galEdit.i]=data;
     const btn=document.getElementById("gsave");btn.disabled=true;btn.textContent="Salvando…";
     try{await saveGaleria(list);galEdit=null;tab="campeoes";render()}
