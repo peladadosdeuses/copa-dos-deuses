@@ -503,7 +503,20 @@ const HISTORICO=[
   {nome:"11ª Copa dos Deuses",data:"",campeao:"Brasil",jogadores:"Paulista, Álvaro, Serginho, Papito, Freire, Bruno Mesquita",foto:"fotos/campeoes-11.jpg",ordem:11,fixo:true},
   {nome:"10ª Copa dos Deuses",data:"",campeao:"Espanha",jogadores:"Matheus Santos (goleiro), Papito, Claudinho, Léo Braga, Vitu, Ermírio, Lucas Ferraz",foto:"fotos/campeoes-10.jpg",ordem:10,fixo:true},
   {nome:"9ª Copa dos Deuses",data:"",campeao:"França",jogadores:"Alysson (goleiro), Acerola, Vini Rios, Adriano, Anselmo, Rocha, VH",foto:"fotos/campeoes-09.jpg",ordem:9,fixo:true},
-  {nome:"8ª Copa dos Deuses",data:"",campeao:"Holanda",jogadores:"Matheus Santos (goleiro), Freire, Tufão, Gustavo Markus, Acerola, Juninho, Sales",foto:"fotos/campeoes-08.jpg",ordem:8,fixo:true},
+  {nome:"8ª Copa dos Deuses",data:"",campeao:"Holanda",vice:"Argentina",placar:"3 × 2",artilheiro:"Gustavo Markus (4 gols)",jogadores:"Matheus Santos (goleiro), Freire, Tufão, Gustavo Markus, Acerola, Juninho, Sales",foto:"fotos/campeoes-08.jpg",ordem:8,fixo:true,
+   detalhe:{
+    tabela:[["Argentina",7,2,1,1,5,4,1],["Brasil",5,1,2,1,4,3,1],["Holanda",5,1,2,1,2,1,1],["Alemanha",5,1,2,1,2,2,0],["Itália",2,0,2,2,1,4,-3]],
+    rodadas:[[["Itália",0,0,"Holanda"],["Argentina",2,0,"Alemanha"]],[["Brasil",1,0,"Holanda"],["Itália",0,1,"Argentina"]],[["Alemanha",0,0,"Brasil"],["Holanda",2,0,"Argentina"]],
+             [["Itália",0,2,"Alemanha"],["Argentina",2,2,"Brasil"]],[["Alemanha",0,0,"Holanda"],["Itália",1,1,"Brasil"]]],
+    semis:[["Argentina",1,0,"Alemanha"],["Brasil",2,3,"Holanda"]],
+    final:["Argentina",2,3,"Holanda"],
+    cols:["G","A"],
+    times:[
+     {nome:"Holanda",jog:[["Matheus Santos (gol)",0,0],["Sales",1,0],["Acerola",2,0],["Gustavo Markus",4,3],["Juninho",1,0],["Freire",0,0],["Chiclete",0,2]],obs:"Matheus Santos fez 1 gol contra."},
+     {nome:"Argentina",jog:[["Marlon (gol)",0,0],["Daví Silva",1,3],["Marcelo Lopes",3,1],["Vini Rios",1,0],["Parente",1,0],["Léo Braga",2,0],["Ângelo",0,0]]},
+     {nome:"Brasil",jog:[["Alysson (gol)",0,0],["Paulista",2,0],["Papito",1,0],["Pepê",1,0],["Serginho",0,0],["Frodo",0,0],["Pi",0,0]]},
+     {nome:"Alemanha",jog:[["Lucas Cajueiro (gol)",0,0],["KDU",1,1],["Lucas Eduardo",1,1],["Claudinho",0,0],["Adriano",0,0],["VH",0,0],["Vitu",0,0]]},
+     {nome:"Itália",jog:[["Léo Nogueira (gol)",0,0],["Brennand",0,0],["Pajé",0,1],["Gustavo",0,0],["Ash",1,0],["Ermírio",0,0],["Tufão",0,0]]}]}},
   {nome:"7ª Copa dos Deuses",data:"",campeao:"Argentina",jogadores:"Léo Nogueira, Raoni, Brennand, Rodrigo Paiva, Sales, Igor, Pi",foto:"fotos/campeoes-07.jpg",ordem:7,fixo:true},
   {nome:"6ª Copa dos Deuses",data:"",campeao:"Preto",jogadores:"Rafael Melo, Daví Silva, Marcelo Lopes, VG, Pedro Sá, VH, Pi",foto:"fotos/campeoes-06.jpg",ordem:6,fixo:true},
   {nome:"5ª Copa dos Deuses",data:"10/07/2022",campeao:"Holanda",craque:"Maradona",artilheiro:"Paulista (4 gols)",jogadores:"Murilo (goleiro), Belo, Pajé, Maradona, Igor, Acerola, Vale",foto:"fotos/campeoes-05.jpg",ordem:5,fixo:true,
@@ -584,7 +597,7 @@ function copaResumo(){
   return {nome:"12ª Copa dos Deuses",data:"02/12/2026",campeao:t?.nome||"",jogadores:[...(t?.goleiro?[t.goleiro]:[]),...(t?.jogadores||[])].join(", "),
     stats:liveStats(),vice:team(v)?.nome||"",placar:`${f.gc} × ${f.gf}${f.gc===f.gf?" (shoot-out)":""}`,craque:ok[0]?`${ok[0].p} (${dec(ok[0].med,2)})`:"",artilheiro:art?`${art.p} (${art.g} gols)`:"",obs:""};
 }
-const COR={verde:"#3fae49",vermelho:"#e0352b",azul:"#6bb6f0",preto:"#111",laranja:"#f28a1e",amarelo:"#f5d33a",branco:"#fff"};
+const COR={verde:"#3fae49",vermelho:"#e0352b",azul:"#6bb6f0",preto:"#111",laranja:"#f28a1e",amarelo:"#f5d33a",branco:"#fff",holanda:"#f28a1e",argentina:"#75aadb",brasil:"#f5d33a",alemanha:"#9aa3a8",italia:"#2f6fd0",espanha:"#c8102e",franca:"#2a4ea0"};
 const dot=t=>`<span class="dot" style="background:${COR[normName(t)]||"var(--muted)"}"></span>`;
 function detalheHTML(d){
   const jogo=([a,x,y,b])=>`<div class="dt-jogo">${dot(a)}${esc(a)} <span class="dt-pl">${x===""?"×":esc(String(x))+(x==="anulado"?"":" × "+esc(String(y)))}</span> ${esc(b)}${dot(b)}</div>`;
