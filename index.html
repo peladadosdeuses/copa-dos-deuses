@@ -597,12 +597,12 @@ function titulos(){
   const m={};
   for(const e of [...HISTORICO,...galeria])for(const raw of (e.jogadores||"").split(",")){
     if(/\(goleiro\)/i.test(raw))continue; // goleiro avulso não conta título
-    const nm=raw.replace(/\s*\(.*?\)\s*/g,"").trim();if(!nm)continue;const k=normName(nm);
+    const nm=raw.replace(/\s*\(.*?\)\s*/g,"").trim();if(!nm)continue;const k=keyOf(nm);
     (m[k]??={nome:nm,eds:[]}).eds.push(edNum(e)??e.nome)}
   return m;
 }
 /* números de todas as copas: somados dos dados de cada edição + a copa em andamento */
-const ALIAS={"vitor hugo":"vh","luis felipe":"luis felipe"};
+const ALIAS={"vitor hugo":"vh","luis felipe":"luis felipe","helder":"heldinho","bruno mesquita":"mesquita","igor":"igor fofo"};
 const keyOf=n=>{const k=normName(n);return ALIAS[k]||k};
 function liveStats(){const m={};for(const j of allRatedGames())for(const l of j.linhas){const o=(m[l.p]??=[l.p,0,0]);o[1]+=l.g||0;o[2]+=l.a||0}return Object.values(m).filter(r=>r[1]||r[2])}
 function carreira(){
@@ -629,7 +629,7 @@ function carreiraHTML(){
 // taças de cada jogador nas copas anteriores (goleiro avulso não conta)
 let _tt=null,_ttKey="";
 function tacas(p){const k=galeria.length+"";if(!_tt||_ttKey!==k){_tt=titulos();_ttKey=k}
-  const n=_tt[normName(p)]?.eds.length||0;return n?` <span class="taca" title="${n} título${n>1?"s":""} da Copa dos Deuses">🏆${n>1?n:""}</span>`:""}
+  const n=_tt[keyOf(p)]?.eds.length||0;return n?` <span class="taca" title="${n} título${n>1?"s":""} da Copa dos Deuses">🏆${n>1?n:""}</span>`:""}
 function copaResumo(){
   const f=jogos["final"];if(!f||!played(f))return null;
   const w=winner(f),v=w===f.casa?f.fora:f.casa,t=team(w),{ok}=standingsPlayers();
@@ -669,7 +669,7 @@ function viewCampeoes(){
     const kv=(k,v)=>v?`<div><div class="ed-k">${k}</div><div class="ed-v">${esc(v)}</div></div>`:"";
     return `<article class="ed"><div class="ed-h"><div class="cup" aria-hidden="true">🏆</div><div style="min-width:0">
       <div class="ed-year">${esc(e.nome)}${e.data?" · "+esc(e.data):""}</div><div class="ed-name">${esc(e.campeao)}</div>${e.vice?`<div class="ed-sub">Vice: ${esc(e.vice)}${e.placar?" · final "+esc(e.placar):""}</div>`:""}</div></div>${foto}
-      <div class="ed-body">${kv("Craque",e.craque)}${kv("Artilheiro",e.artilheiro)}${roster.length?`<div style="grid-column:1/-1"><div class="ed-k">Elenco campeão</div><div class="ed-roster">${roster.map(r=>{const n=/\(goleiro\)/i.test(r)?1:(tt[normName(r)]?.eds.length||1);return `<span>${esc(r)}${n>=2?` <b class="tit t${Math.min(n,5)}">${n}×</b>`:""}</span>`}).join("")}</div></div>`:""}</div>
+      <div class="ed-body">${kv("Craque",e.craque)}${kv("Artilheiro",e.artilheiro)}${roster.length?`<div style="grid-column:1/-1"><div class="ed-k">Elenco campeão</div><div class="ed-roster">${roster.map(r=>{const n=/\(goleiro\)/i.test(r)?1:(tt[keyOf(r)]?.eds.length||1);return `<span>${esc(r)}${n>=2?` <b class="tit t${Math.min(n,5)}">${n}×</b>`:""}</span>`}).join("")}</div></div>`:""}</div>
       ${e.obs?`<div class="ed-note">${esc(e.obs)}</div>`:""}
       ${e.detalhe?`<details class="ed-more"><summary>Ver a copa completa</summary>${detalheHTML(e.detalhe)}</details>`:""}
       ${canWrite&&!e.fixo?`<div class="gactions"><button class="btn sm danger" data-act="galdel" data-i="${e.i}">${arm==="galdel:"+e.i?"Toque de novo pra excluir":"Excluir"}</button><button class="btn sm" data-act="galedit" data-i="${e.i}">Editar</button></div>`:""}</article>`}).join("")+'</div>';
