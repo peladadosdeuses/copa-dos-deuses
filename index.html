@@ -195,6 +195,12 @@ input,select{font:500 15px var(--body);color:var(--fg);background:var(--surface)
 .tit.t3{background:var(--gold-soft);color:var(--gold)}
 .tit.t4,.tit.t5{background:var(--gold);color:var(--bg)}
 .ed-roster b.tit{margin-left:2px}
+.prems{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:10px}
+.prem{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;min-width:0}
+.prem.gold{border-color:var(--gold);background:var(--gold-soft)}
+.prem.hades{border-color:var(--danger)}
+.prem-t{font:700 12px var(--display);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.prem-n{font:italic 900 22px/1.1 var(--display);text-transform:uppercase;margin-top:4px;overflow-wrap:anywhere}
 .taca{font:700 13px var(--display);color:var(--gold);white-space:nowrap;margin-left:2px}
 .ed-note{padding:0 16px 14px;color:var(--muted);font-size:14px}
 .ed-more{border-top:1px solid var(--line)}
@@ -387,17 +393,18 @@ function chances(useSim){
 
 /* ===== ranking de notas ===== */
 function allRatedGames(){return Object.values(jogos).filter(j=>played(j)&&(j.linhas||[]).length)}
-function standingsPlayers(){
+function standingsPlayers(scope="all"){
   const m={};PLAYERS.forEach(([p])=>m[p]={p,j:0,g:0,a:0,sp:0,sw:0,mvp:0});
-  for(const gm of allRatedGames()){
+  const min=scope==="ko"?1:R.min;
+  for(const gm of allRatedGames().filter(g=>scope==="liga"?g.tipo==="liga":scope==="ko"?g.tipo!=="liga":true)){
     const fin=gm.tipo==="final",w=PESO[gm.tipo]||1;let best=null;
     for(const l of gm.linhas){m[l.p]??={p:l.p,j:0,g:0,a:0,sp:0,sw:0,mvp:0};
       const n=nota(l,fin),s=m[l.p];s.j++;s.g+=l.g||0;s.a+=l.a||0;s.sp+=n*w;s.sw+=w;if(!best||n>best.n)best={p:l.p,n}}
     if(best)m[best.p].mvp++;
   }
   const all=Object.values(m).map(s=>({...s,med:s.sw?s.sp/s.sw:null}));
-  return {ok:all.filter(s=>s.j>=R.min).sort((a,b)=>b.med-a.med||b.sp-a.sp),
-          rest:all.filter(s=>s.j<R.min).sort((a,b)=>(b.med??-1)-(a.med??-1)||(STARS[b.p]||0)-(STARS[a.p]||0))};
+  return {ok:all.filter(s=>s.j>=min).sort((a,b)=>b.med-a.med||b.sp-a.sp),
+          rest:all.filter(s=>s.j<min).sort((a,b)=>(b.med??-1)-(a.med??-1)||(STARS[b.p]||0)-(STARS[a.p]||0))};
 }
 
 /* ===== views ===== */
@@ -480,12 +487,36 @@ function viewTimes(){
   });
   return h+`</div><p class="note">O sorteio testa trocas entre os times até a soma de estrelas ficar a mais igual possível (28 ou 29 cada) e espalhar zaga, meio e ataque. Goleiro é avulso e não entra na conta.${canWrite?" Dá pra trocar alguém de time no seletor ao lado do nome.":""}</p></div>`;
 }
+let notasScope="all";
+const SCOPES=[["all","Geral"],["liga","Fase de pontos"],["ko","Mata-mata"]];
+function premios(scope){
+  const {ok,rest}=standingsPlayers(scope),all=[...ok,...rest].filter(s=>s.j>0);
+  const top=k=>{const mx=Math.max(0,...all.map(s=>s[k]));return mx?{v:mx,ps:all.filter(s=>s[k]===mx).sort((a,b)=>(b.med??0)-(a.med??0))}:null};
+  const craque=ok[0]||null;
+  const rev=ok.find(s=>(STARS[s.p]||0)<=5&&s!==craque)||null;
+  const mara=ok.length>=3?ok[ok.length-1]:null;
+  return {art:top("g"),gar:top("a"),craque,rev,mara,ok,rest};
+}
+function premiosHTML(pr){
+  const nomes=ps=>{const n=ps.slice(0,3).map(s=>esc(s.p));const t=n.length>1?n.slice(0,-1).join(", ")+" e "+n.at(-1):n[0];return t+(ps.length>3?` +${ps.length-3}`:"")};
+  const card=(ic,t,who,det,cls="")=>`<div class="prem${cls}"><div class="prem-t">${ic} ${t}</div><div class="prem-n">${who||'<span class="note">Sai quando tiver jogo lançado</span>'}</div>${who&&det?`<div class="sub">${det}</div>`:""}</div>`;
+  return `<div class="prems">
+   ${card("⚽","Artilheiro",pr.art&&nomes(pr.art.ps),pr.art&&`${pr.art.v} gol${pr.art.v>1?"s":""}`)}
+   ${card("🎯","Garçom",pr.gar&&nomes(pr.gar.ps),pr.gar&&`${pr.gar.v} assistência${pr.gar.v>1?"s":""}`)}
+   ${card("👑","Craque",pr.craque&&esc(pr.craque.p),pr.craque&&`média ${dec(pr.craque.med,2)} · ${pr.craque.j} jogo${pr.craque.j>1?"s":""}`," gold")}
+   ${card("🌟","Destaque/Revelação",pr.rev&&esc(pr.rev.p),pr.rev&&`média ${dec(pr.rev.med,2)} · ${STARS[pr.rev.p]||0}★`)}
+   ${card("🥴","Prêmio Maradona",pr.mara&&esc(pr.mara.p),pr.mara&&`média ${dec(pr.mara.med,2)}`," hades")}</div>`;
+}
 function viewNotas(){
-  const {ok,rest}=standingsPlayers();
+  const pr=premios(notasScope),{ok,rest}=pr;
   const row=(s,i,dim)=>{const tid=teamOf(s.p);return `<div class="rrow${i===0&&!dim?" top":""}${dim?" dim":""}"><div class="pos">${dim?"·":i+1}</div>
     <div class="name">${tid?`<i class="dot" style="background:${tcolor(tid)};margin-right:6px"></i>`:""}${esc(s.p)} ${starStr(STARS[s.p]||0)}${tacas(s.p)}<div class="sub">${s.j} jogo${s.j===1?"":"s"} · ${s.g}G ${s.a}A${s.mvp?` · ${s.mvp}× craque do jogo`:""}</div></div>
     ${s.med==null?badge(null):badge(s.med,2)}</div>`};
-  return `<div class="section"><div class="sec-h"><h2>Craque da Copa</h2></div><p class="note">Média das notas, com semi valendo ${dec(PESO.semi,0)}x e final ${dec(PESO.final)}x. Precisa de ${R.min} jogos pra entrar na disputa.</p>
+  const minj=notasScope==="ko"?1:R.min;
+  return `<div class="section"><div class="sec-h"><h2>Prêmios e notas</h2></div>
+    <div class="chips" role="group" aria-label="Fase" style="margin-bottom:12px">${SCOPES.map(([k,l])=>`<button type="button" class="chip" data-act="nscope" data-s="${k}" aria-pressed="${notasScope===k}">${l}</button>`).join("")}</div>
+    ${premiosHTML(pr)}
+    <p class="note">Destaque/Revelação: melhor média entre quem tem até 5★, fora o craque. Prêmio Maradona: menor média${notasScope==="ko"?"":` entre quem tem ${minj}+ jogos`}. Média com semi valendo ${dec(PESO.semi,0)}x e final ${dec(PESO.final)}x.</p>
     <div class="box">${ok.map((s,i)=>row(s,i,false)).join("")}${rest.length?'<div class="divider">Ainda sem o mínimo de jogos</div>'+rest.map(s=>row(s,0,true)).join(""):""}</div></div>`;
 }
 function viewRegras(){
@@ -784,6 +815,7 @@ view.addEventListener("click",async ev=>{
     return}
   if(d.act==="cancel"){editing=null;tab="jogos";render();return}
   if(d.act==="galnew"){galEdit={i:null,data:{}};tab="galform";render();window.scrollTo(0,0);return}
+  if(d.act==="nscope"){notasScope=d.s;render();return}
   if(d.act==="galauto"){galEdit={i:null,data:copaResumo()};tab="galform";render();window.scrollTo(0,0);return}
   if(d.act==="galedit"){galEdit={i:+d.i,data:{...galeria[+d.i]}};tab="galform";render();window.scrollTo(0,0);return}
   if(d.act==="galcancel"){galEdit=null;tab="campeoes";render();return}
