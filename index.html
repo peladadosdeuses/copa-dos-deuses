@@ -593,8 +593,8 @@ const HISTORICO=[
      {nome:"Preto",jog:[["Dayrton (gol)",0,1],["Daví Silva",0,3],["Pajé",1,0],["Claudinho",0,0],["Freire",2,0],["Gui Sheik",0,0],["Hugo",3,1]]},
      {nome:"Brasil",jog:[["Binho (gol)",0,0],["Paulista",1,1],["VG",1,1],["Vale",0,0],["Kelvin",1,0],["VH",0,0],["Tufão",0,0]]},
      {nome:"Itália",jog:[["Washington (gol)",0,0],["Acerola",0,0],["Ebrahim",1,0],["Vinícius",2,1],["Ash",0,0],["Vitu",0,1],["Bruno Rijo",0,0]]}]}},
-  {nome:"6ª Copa dos Deuses",data:"",campeao:"Preto",jogadores:"Rafael Melo (goleiro), Daví Silva, Marcelo Lopes, VG, Pedro Sá, VH, Pi",foto:"fotos/campeoes-06.jpg",ordem:6,fixo:true,
-   detalhe:{cols:["G","A"],times:[{nome:"Preto",jog:[["Daví Silva",2,5]],obs:"Por enquanto só os números do Daví Silva; o resto do time ainda vai ser adicionado."},{nome:"Outros times",jog:[["Papito",4,0]],obs:"Time do Papito nessa copa ainda a confirmar; assistências dele ainda não lançadas."}]}},
+  {nome:"6ª Copa dos Deuses",data:"",campeao:"Preto",craque:"Marcelo Lopes",artilheiro:"Pedro Sá",jogadores:"Rafael Melo (goleiro), Daví Silva, Marcelo Lopes, VG, Pedro Sá, VH, Pi",foto:"fotos/campeoes-06.jpg",ordem:6,fixo:true,
+   detalhe:{premios:[["Melhor jogador","Marcelo Lopes"],["Artilheiro","Pedro Sá"],["Garçom","Daví Silva"],["Xerifão","Pi"]],cols:["G","A"],times:[{nome:"Preto",jog:[["Daví Silva",2,5]],obs:"Por enquanto só os números do Daví Silva; o resto do time ainda vai ser adicionado."},{nome:"Outros times",jog:[["Papito",4,0]],obs:"Time do Papito nessa copa ainda a confirmar; assistências dele ainda não lançadas."}]}},
   {nome:"5ª Copa dos Deuses",data:"10/07/2022",campeao:"Holanda",craque:"Maradona",artilheiro:"Paulista (4 gols)",jogadores:"Murilo (goleiro), Belo, Pajé, Maradona, Igor, Acerola, Vale",foto:"fotos/campeoes-05.jpg",ordem:5,fixo:true,
    detalhe:{
     artilheiros:[["Paulista","Branco",4],["Daví Silva","Azul",3],["Vinícius","Amarelo",3],["Magleibson","Preto",3],["Belo","Laranja",2],["Vale","Laranja",2],["Tufão","Azul",2]],
@@ -692,6 +692,7 @@ function detalheHTML(d){
   if(d.semis||d.final)h+=`<div><h4>Mata-mata</h4><div class="dt-rod">${d.semis?`<div><b>Semifinais</b>${d.semis.map(jogo).join("")}</div>`:""}${d.final?`<div><b>Final</b>${jogo(d.final)}</div>`:""}${d.terceiro?`<div><b>3º lugar</b>${jogo(d.terceiro)}</div>`:""}</div></div>`;
   if(d.times)h+=`<div><h4>Números por time</h4><div class="dt-times">${d.times.map(t=>`<div class="dt-time"><h5>${dot(t.nome)}${esc(t.nome)}</h5><div class="dt-scroll"><table><tr><th></th>${d.cols.map(c=>`<th>${c}</th>`).join("")}</tr>${t.jog.map(j=>`<tr><td>${esc(j[0])}</td>${j.slice(1).map(v=>`<td>${esc(String(v))}</td>`).join("")}</tr>`).join("")}</table></div>${t.obs?`<div class="dt-x">${esc(t.obs)}</div>`:""}</div>`).join("")}</div></div>`;
   if(d.artilheiros||d.garcons)h+=`<div class="dt-list">${d.artilheiros?lista("Artilheiros",d.artilheiros,["gol","gols"]):""}${d.garcons?lista("Garçons",d.garcons,["assist.","assist."]):""}</div>`;
+  if(d.premios)h+=`<div><h4>Prêmios</h4><div class="dt-scroll"><table>${d.premios.map(([p,n])=>`<tr><td>${esc(p)}</td><td style="text-align:left;font-weight:600">${esc(n)}</td></tr>`).join("")}</table></div></div>`;
   if(d.selecao)h+=`<div><h4>Seleção dos Deuses</h4><div class="dt-scroll"><table>${d.selecao.map(([p,n])=>`<tr><td>${esc(p)}</td><td style="text-align:left;font-weight:600">${esc(n)}</td></tr>`).join("")}</table></div></div>`;
   return h+"</div>";
 }
