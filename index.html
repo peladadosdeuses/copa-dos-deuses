@@ -495,7 +495,8 @@ function premios(scope){
   const craque=ok[0]||null;
   const rev=ok.find(s=>(STARS[s.p]||0)<=5&&s!==craque)||null;
   const mara=ok.length>=3?ok[ok.length-1]:null;
-  return {art:top("g"),gar:top("a"),craque,rev,mara,ok,rest};
+  all.forEach(s=>s.ga=s.g+s.a);
+  return {art:top("g"),gar:top("a"),ga:top("ga"),craque,rev,mara,ok,rest};
 }
 function premiosHTML(pr){
   const nomes=ps=>{const n=ps.slice(0,3).map(s=>esc(s.p));const t=n.length>1?n.slice(0,-1).join(", ")+" e "+n.at(-1):n[0];return t+(ps.length>3?` +${ps.length-3}`:"")};
@@ -503,6 +504,7 @@ function premiosHTML(pr){
   return `<div class="prems">
    ${card("⚽","Artilheiro",pr.art&&nomes(pr.art.ps),pr.art&&`${pr.art.v} gol${pr.art.v>1?"s":""}`)}
    ${card("🎯","Garçom",pr.gar&&nomes(pr.gar.ps),pr.gar&&`${pr.gar.v} assistência${pr.gar.v>1?"s":""}`)}
+   ${card("⚡","Participações em gol",pr.ga&&nomes(pr.ga.ps),pr.ga&&`${pr.ga.v} (gols + assist.)`)}
    ${card("👑","Craque",pr.craque&&esc(pr.craque.p),pr.craque&&`média ${dec(pr.craque.med,2)} · ${pr.craque.j} jogo${pr.craque.j>1?"s":""}`," gold")}
    ${card("🌟","Destaque/Revelação",pr.rev&&esc(pr.rev.p),pr.rev&&`média ${dec(pr.rev.med,2)} · ${STARS[pr.rev.p]||0}★`)}
    ${card("🥴","Prêmio Maradona",pr.mara&&esc(pr.mara.p),pr.mara&&`média ${dec(pr.mara.med,2)}`," hades")}</div>`;
@@ -655,13 +657,14 @@ function carreira(){
   return {lista:Object.values(m),fontes:fontes.sort((a,b)=>(typeof a.ed==="number"?a.ed:99)-(typeof b.ed==="number"?b.ed:99))};
 }
 function carreiraHTML(){
-  const {lista,fontes}=carreira();if(!lista.length)return "";
-  const top=(k,u)=>lista.filter(x=>x[k]>0).sort((a,b)=>b[k]-a[k]||b[k==="g"?"a":"g"]-a[k==="g"?"a":"g"]||a.nome.localeCompare(b.nome)).slice(0,10);
+  const {lista:l0,fontes}=carreira();if(!l0.length)return "";const lista=l0.map(x=>({...x,ga:x.g+x.a}));
+  const top=(k,u)=>lista.filter(x=>x[k]>0).sort((a,b)=>b[k]-a[k]||(k==="ga"?b.g-a.g:b[k==="g"?"a":"g"]-a[k==="g"?"a":"g"])||a.nome.localeCompare(b.nome)).slice(0,10);
   const rows=(l,k)=>{let pos=0,last=null;return l.map((x,i)=>{if(x[k]!==last){pos=i+1;last=x[k]}const eds=[...x.eds].sort((a,b)=>a-b).map(n=>typeof n==="number"?n+"ª":esc(n)).join(" · ");
-    return `<div class="lord"><span class="lord-n">${x[k]}</span><div style="min-width:0"><div class="name">${pos}. ${esc(x.nome)}</div><div class="sub">${k==="g"?(x.a?x.a+" assist. · ":""):(x.g?x.g+" gols · ":"")}${eds}</div></div></div>`}).join("")};
+    return `<div class="lord"><span class="lord-n">${x[k]}</span><div style="min-width:0"><div class="name">${pos}. ${esc(x.nome)}</div><div class="sub">${k==="ga"?`${x.g}G ${x.a}A · `:k==="g"?(x.a?x.a+" assist. · ":""):(x.g?x.g+" gols · ":"")}${eds}</div></div></div>`}).join("")};
   const fonte=fontes.map(f=>`${typeof f.ed==="number"?f.ed+"ª":esc(f.ed)}${f.parcial?" (só o top)":""}${f.vivo?" (ao vivo)":""}`).join(", ");
   return `<div class="hof2"><div class="box"><div class="lords-h"><h3>Artilheiros das copas</h3><span class="note">gols</span></div>${rows(top("g"),"g")}</div>
-  <div class="box"><div class="lords-h"><h3>Garçons das copas</h3><span class="note">assistências</span></div>${rows(top("a"),"a")}</div></div>
+  <div class="box"><div class="lords-h"><h3>Garçons das copas</h3><span class="note">assistências</span></div>${rows(top("a"),"a")}</div>
+  <div class="box"><div class="lords-h"><h3>Participações em gol</h3><span class="note">gols + assist.</span></div>${rows(top("ga"),"ga")}</div></div>
   <p class="note" style="margin:-4px 0 14px">Soma automática das copas com números lançados: ${fonte}. Toda copa nova entra aqui sozinha.</p>`;
 }
 // taças de cada jogador nas copas anteriores (goleiro avulso não conta)
