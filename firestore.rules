@@ -6,7 +6,10 @@ service cloud.firestore {
       return request.auth != null
         && request.auth.token.email_verified == true
         && request.auth.token.email.lower() in [
-          "davialcoforado@gmail.com"
+          "davialcoforado@gmail.com",
+          "peladadosdeuses2018@gmail.com",
+          "ricardoriosjr96@gmail.com",
+          "joaoguiga50@gmail.com"
         ];
     }
     match /copa/{doc} {

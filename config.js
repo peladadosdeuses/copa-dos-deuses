@@ -12,4 +12,7 @@ export const FIREBASE_CONFIG = {
 // Lembre de colocar os mesmos e-mails em firestore.rules.
 export const DITADURA = [
   "davialcoforado@gmail.com",
+  "peladadosdeuses2018@gmail.com",
+  "ricardoriosjr96@gmail.com",
+  "joaoguiga50@gmail.com",
 ];
