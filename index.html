@@ -628,7 +628,17 @@ const HISTORICO=[
      {nome:"Verde",jog:[["Pajé",1,2],["Luis Felipe",2,0],["Vitor Hugo",0,2],["Nogueira",2,0],["Ítalo",1,2]]},
      {nome:"Preto",jog:[["KDU",1,0],["Vale",1,1],["Vitu",1,0],["Gui Sheik",0,0],["Murilo",1,1]]}]}},
   {nome:"2ª Copa dos Deuses",data:"",campeao:"Preto",jogadores:"Guabiraba (goleiro), Papito, George, Léo Braga, Solado, Lucas Ferraz",foto:"fotos/campeoes-02.jpg",ordem:2,fixo:true},
-  {nome:"1ª Copa dos Deuses",data:"",campeao:"Vermelho",jogadores:"Tácio (goleiro), Nogueira, Solado, Freire, VH, Papito",foto:"fotos/campeoes-01.jpg",ordem:1,fixo:true}
+  {nome:"1ª Copa dos Deuses",data:"2019",campeao:"Vermelho",jogadores:"Tácio (goleiro), Nogueira, Solado, Freire, VH, Papito",foto:"fotos/campeoes-01.jpg",ordem:1,fixo:true,
+   detalhe:{
+    formato:"4 times, pontos corridos em ida e volta (12 jogos), jogos de 10 minutos. Semifinal 1º × 4º e 2º × 3º. O time Branco virou Amarelo.",
+    tabela:[["Vermelho",13,4,1,1,12,4,8],["Azul",9,2,3,1,4,4,0],["Preto",5,1,2,3,5,7,-2],["Amarelo",5,1,2,3,4,10,-6]],
+    rodadas:[[["Vermelho",2,0,"Preto"],["Azul",1,1,"Amarelo"]],[["Vermelho",1,2,"Amarelo"],["Azul",0,0,"Preto"]],[["Preto",3,0,"Amarelo"],["Vermelho",1,1,"Azul"]],
+             [["Preto",1,3,"Vermelho"],["Amarelo",0,1,"Azul"]],[["Amarelo",0,3,"Vermelho"],["Preto",0,1,"Azul"]],[["Amarelo",1,1,"Preto"],["Azul",0,2,"Vermelho"]]],
+    semis:[["Vermelho",3,1,"Preto"],["Azul",1,0,"Amarelo"]],
+    final:["Vermelho",2,0,"Azul"],
+    cols:["G","A"],
+    times:[{nome:"Todos os jogadores",jog:[["Solado",5,2],["Brenoba",4,0],["Freire",3,4],["Luís Felipe",2,3],["Nogueira",2,1],["Serginho",2,0],["Papito",1,4],["Pedro M.",1,1],["Valão",1,1],["Gui",1,1],["Pajé",1,0],["KDU",1,0],["Tácio (gol)",1,0],["Vitor",1,0],["Pi",0,2],["Parente",0,1],["Ítalo",0,1],["Caribé",0,1],["Heldinho",0,0],["Levy",0,0]],
+      obs:"A súmula não separa os jogadores por time e tem 26 dos 31 gols. Na súmula o Vermelho aparece com 12 pontos e o Amarelo com 6; refiz a tabela pelos placares das rodadas."}]}}
 ];
 const normName=x=>x.replace(/\s*\(.*?\)\s*/g,"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
 const edNum=e=>{const m=/(\d+)\s*ª/.exec(e.nome||"");return m?+m[1]:null};
