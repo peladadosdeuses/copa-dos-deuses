@@ -300,7 +300,15 @@ let galeria=[], galEdit=null, cfg=null, jogos={}, tab="tabela", canWrite=false, 
 
 const teams=()=>cfg?.times||[];
 const team=id=>teams().find(t=>t.id===id);
-const tcolor=id=>{const i=teams().findIndex(t=>t.id===id);return `var(--t${i<0?0:i})`};
+const tcolor=id=>{const t=team(id);if(t?.cor)return t.cor;const i=teams().findIndex(t=>t.id===id);return `var(--t${i<0?0:i})`};
+// times oficiais da 12ª (montados pela ditadura; o sorteio saiu do site)
+const OFICIAIS=[
+  {id:"t1",nome:"Inglaterra",cor:"#ffffff",goleiro:"",jogadores:["Ermírio","Thales","VG","Léo Braga","Daví Silva"]},
+  {id:"t2",nome:"Brasil",cor:"#f5d33a",goleiro:"",jogadores:["VH","Pajé","Papito","Neto Martins","Saulo"]},
+  {id:"t3",nome:"Espanha",cor:"#e0352b",goleiro:"",jogadores:["Vitu","Xavier","Igor Fofo","Álvaro","Kaynã"]},
+  {id:"t4",nome:"Croácia",cor:"#ff9db0",goleiro:"",jogadores:["Bruno Mineiro","Paivaum","Lucas Eduardo","Claudinho","Eduardo Falcão"]},
+  {id:"t5",nome:"Alemanha",cor:"#9aa3a8",goleiro:"",jogadores:["Mesquita","Heldinho","Gui Mesquita","Manaus","Alberto"]}];
+const ehOficial=()=>{const ts=teams();return ts.length===5&&OFICIAIS.every(o=>{const t=ts.find(x=>x.id===o.id);return t&&t.nome===o.nome&&t.cor===o.cor&&o.jogadores.every(p=>t.jogadores.includes(p))&&t.jogadores.length===o.jogadores.length})};
 const tlabel=id=>{const t=team(id);return t?`<span class="tname"><i class="dot" style="background:${tcolor(id)}"></i><span>${esc(t.nome)}</span></span>`:"<span class='note'>A definir</span>"};
 const teamOf=p=>teams().find(t=>t.jogadores.includes(p)||(t.goleiro&&t.goleiro===p))?.id;
 const leagueGames=()=>Object.values(jogos).filter(j=>j.tipo==="liga").sort((a,b)=>a.rodada-b.rodada||a.id.localeCompare(b.id));
@@ -410,8 +418,8 @@ function standingsPlayers(scope="all"){
 /* ===== views ===== */
 function noTeams(){
   return `<div class="empty"><b>Times ainda não sorteados</b>
-    <span>${canWrite?"O sorteio equilibra as estrelas entre os 5 times e já monta as 5 rodadas, as semis e a final.":"A ditadura vai sortear os times em breve."}</span>
-    ${canWrite?'<button class="btn primary" data-act="draw">Sortear times</button>':""}</div>`;
+    <span>${canWrite?"Aplica os 5 times montados pela ditadura e já monta as 5 rodadas, as semis e a final.":"A ditadura vai publicar os times em breve."}</span>
+    ${canWrite?'<button class="btn primary" data-act="oficial">Aplicar times oficiais</button>':""}</div>`;
 }
 function viewTabela(){
   if(!teams().length)return noTeams();
@@ -477,15 +485,15 @@ function viewJogos(){
 function viewTimes(){
   if(!teams().length)return noTeams();
   const anyPlayed=Object.values(jogos).some(played);
-  let h=`<div class="section"><div class="sec-h"><h2>Times</h2>${canWrite?`<button class="btn sm ${arm==="draw"?"danger":""}" data-act="draw">${arm==="draw"?(anyPlayed?"Isso apaga todos os resultados. Toque de novo":"Toque de novo pra sortear"):"Sortear de novo"}</button>`:""}</div>
+  let h=`<div class="section"><div class="sec-h"><h2>Times</h2>${canWrite&&!ehOficial()?`<button class="btn sm ${arm==="oficial"?"danger":"primary"}" data-act="oficial">${arm==="oficial"?(anyPlayed?"Isso apaga todos os resultados. Toque de novo":"Toque de novo pra aplicar"):"Aplicar times oficiais"}</button>`:""}</div>
   <div class="teams">`;
   teams().forEach((t,i)=>{
     const sum=t.jogadores.reduce((a,p)=>a+(STARS[p]||0),0);
-    h+=`<div class="team" style="--tc:var(--t${i})"><div class="team-h">${canWrite?`<input id="tn-${t.id}" value="${esc(t.nome)}" data-rename="${t.id}" aria-label="Nome do time">`:`<span class="tn">${esc(t.nome)}</span>`}<span class="sumst">★ ${sum}</span></div><div class="pcount">${["ZAG","MEI","ATA"].map(k=>`${t.jogadores.filter(p=>(POS[p]||"").split("/")[0]===k).length} ${POSNAME[k].toLowerCase()}`).join(" · ")}</div>
+    h+=`<div class="team" style="--tc:${tcolor(t.id)}"><div class="team-h">${canWrite?`<input id="tn-${t.id}" value="${esc(t.nome)}" data-rename="${t.id}" aria-label="Nome do time">`:`<span class="tn">${esc(t.nome)}</span>`}<span class="sumst">★ ${sum}</span></div><div class="pcount">${["ZAG","MEI","ATA"].map(k=>`${t.jogadores.filter(p=>(POS[p]||"").split("/")[0]===k).length} ${POSNAME[k].toLowerCase()}`).join(" · ")}</div>
       <div class="pl gk"><span class="pos">GOL</span>${canWrite?`<input id="gk-${t.id}" data-gk="${t.id}" value="${esc(t.goleiro||"")}" placeholder="Goleiro (avulso)" aria-label="Goleiro do ${esc(t.nome)}">`:`<span style="flex:1">${t.goleiro?esc(t.goleiro):'<span class="note">Goleiro a definir</span>'}</span>`}</div>
       ${t.jogadores.slice().sort((a,b)=>"ZAGMEIATA?".indexOf((POS[a]||"?").slice(0,3))-"ZAGMEIATA?".indexOf((POS[b]||"?").slice(0,3))||(STARS[b]||0)-(STARS[a]||0)).map(p=>`<div class="pl"><span class="pos p-${(POS[p]||"x").slice(0,3)}">${POS[p]==="ZAG/MEI"?"Z/M":POS[p]||"?"}</span><span style="flex:1;min-width:0">${esc(p)} ${starStr(STARS[p]||0)}${tacas(p)}</span>${canWrite?`<select id="mv-${esc(p)}" data-move="${esc(p)}" aria-label="Mover ${esc(p)}">${teams().map(o=>`<option value="${o.id}"${o.id===t.id?" selected":""}>${esc(o.nome)}</option>`).join("")}</select>`:""}</div>`).join("")}</div>`;
   });
-  return h+`</div><p class="note">O sorteio testa trocas entre os times até a soma de estrelas ficar a mais igual possível (28 ou 29 cada) e espalhar zaga, meio e ataque. Goleiro é avulso e não entra na conta.${canWrite?" Dá pra trocar alguém de time no seletor ao lado do nome.":""}</p></div>`;
+  return h+`</div><p class="note">Times montados pela ditadura equilibrando estrelas, posição, histórico nas copas e química. Goleiro é avulso e não entra na conta.${canWrite?" Dá pra trocar alguém de time no seletor ao lado do nome.":""}</p></div>`;
 }
 let notasScope="all";
 const SCOPES=[["all","Geral"],["liga","Fase de pontos"],["ko","Mata-mata"]];
@@ -809,6 +817,16 @@ function showStatus(m){const s=document.getElementById("status");s.textContent=m
 function armOnce(key,btnRender){arm=key;render();setTimeout(()=>{if(arm===key){arm=null;render()}},4000)}
 
 /* ===== ações ===== */
+async function aplicarOficiais(){
+  const ts=OFICIAIS.map(t=>{const old=teams().find(x=>x.id===t.id);return {...t,goleiro:old?.goleiro||""}}),fx=fixtures(ts.map(t=>t.id));
+  showStatus("Aplicando os times…");
+  try{
+    for(const id of Object.keys(jogos))await db.doc("jogos/"+id).delete();
+    await db.doc("copa/config").set({times:ts,oficialEm:new Date().toISOString()});
+    for(const g of fx){const {id,...body}=g;await db.doc("jogos/"+id).set(body)}
+    showStatus("");sim={};simMode=false;tab="times";render();
+  }catch(x){showStatus(x.code==="invalid_argument"||x.code==="permission-denied"?"Só quem é da ditadura pode aplicar os times.":"Não deu agora. Tenta de novo.")}
+}
 async function doDraw(){
   const ts=drawTeams(),fx=fixtures(ts.map(t=>t.id));
   showStatus("Sorteando…");
@@ -822,9 +840,9 @@ async function doDraw(){
 view.addEventListener("click",async ev=>{
   const b=ev.target.closest("button");if(!b)return;
   const d=b.dataset;
-  if(d.act==="draw"){
-    if(!teams().length||arm==="draw"){arm=null;b.disabled=true;await doDraw();return}
-    armOnce("draw");return}
+  if(d.act==="oficial"){
+    if(!teams().length||arm==="oficial"){arm=null;b.disabled=true;await aplicarOficiais();return}
+    armOnce("oficial");return}
   if(d.act==="sim"){simMode=!simMode;render();return}
   if(d.act==="simclear"){sim={};render();return}
   if(d.act==="edit"){openForm(d.id);return}
